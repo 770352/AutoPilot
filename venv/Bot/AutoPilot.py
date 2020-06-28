@@ -4,7 +4,7 @@ import discord
 import asyncio
 import time, json
 
-import AutoPilot, systemUtilitys
+from Bot import AutoPilot, systemUtilitys
 import sys, inspect, types, psutil
 import _thread as threads
 version = "0.3.9"
@@ -33,9 +33,6 @@ if os.path.isfile(Profiles):
             ServerSettings = json.load(f)
     except:
         print("Failed Load")
-
-
-
 
 
 def dynamicPrefix(client,message):

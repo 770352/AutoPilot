@@ -1,12 +1,11 @@
 from discord.ext import commands
 import discord
 import psutil
-import AutoPilot
+from Bot import AutoPilot
 from Cogs import moderationCog, rankingsCog
 import time
 from itertools import islice
-isCog = True
-isEnabled = True
+
 
 def setup(client):
     client.add_cog(ActionLogModule(client))

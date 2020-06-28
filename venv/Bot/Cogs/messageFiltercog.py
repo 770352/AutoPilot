@@ -4,8 +4,6 @@ import wordfilter
 from Bot import AutoPilot
 from Bot.Cogs import moderationCog, rankingsCog
 
-isCog = True
-isEnabled = True
 
 def setup(client):
     client.add_cog(FilterModule(client))

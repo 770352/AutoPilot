@@ -5,9 +5,6 @@ from Bot import AutoPilot
 from Bot.Cogs import actionLogCog
 import time
 
-isCog = True
-isEnabled = True
-
 def setup(client):
     client.add_cog(ModUtilityModule(client))
     client.add_cog(ModerationModule(client))
@@ -291,9 +288,8 @@ class ModUtilityModule(commands.Cog):
 class ModerationModule(commands.Cog):
     def __init__(self, bot):
         self.client = bot
-        self.utility = AnModUtilityModule(self.client)
-        self.log = actionLogCog.AnActionLogModule(self.client)
-
+        self.utility = ModUtilityModule(self.client)
+        self.log = actionLogCog.ActionLogModule(self.client)
 
 
     @commands.command(name="purge",description="Bulk Deletes Messages From a Channel \n[userID|amount]")

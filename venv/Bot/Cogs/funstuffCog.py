@@ -3,8 +3,6 @@ import discord
 from Bot import AutoPilot
 from Bot.Cogs import moderationCog, rankingsCog
 
-isCog = True
-isEnabled = True
 
 def setup(client):
     client.add_cog(FunStuffModule(client))
@@ -12,8 +10,8 @@ def setup(client):
 class FunStuffModule(commands.Cog):
     def __init__(self, bot):
         self.client = bot
-        self.modUtility = moderationCog.AnModUtilityModule(self.client)
-        self.memberdata = rankingsCog.AnActivityModule(self.client)
+        self.modUtility = moderationCog.ModUtilityModule(self.client)
+        self.memberdata = rankingsCog.ActivityModule(self.client)
         self.running = True
 
     def loadguildinfo(self, guildID):

@@ -1,9 +1,7 @@
 from discord.ext import commands
 import discord
-import AutoPilot
+from Bot import AutoPilot
 import time
-isCog = True
-isEnabled = True
 
 def setup(client):
     client.add_cog(ActivityModule(client))

@@ -7,8 +7,6 @@ from bs4 import BeautifulSoup
 from async_timeout import timeout
 from functools import partial
 from youtube_dl import YoutubeDL
-isCog = True
-isEnabled = False
 
 def setup(client):
     client.add_cog(MusicModule(client))
