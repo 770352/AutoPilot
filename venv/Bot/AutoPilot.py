@@ -7,7 +7,7 @@ import time, json
 from Bot import AutoPilot, systemUtilitys
 import sys, inspect, types, psutil
 import _thread as threads
-version = "0.3.9"
+version = "0.4.0"
 trusted = ['435450974778294273']
 cogs = {}
 ServerSettings = {}
