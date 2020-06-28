@@ -166,7 +166,7 @@ class ManagmentModule(commands.Cog):
         cogs[str(cog)] = {"Restarting": "Being Removed"}
         self.client.remove_cog(cog)
         cogs[str(cog)] = {"Restarting": "Removed"}
-        loadCogs(self.client,reloadName=cog)
+
 
     @commands.command()
     async def invite(self,context):
@@ -281,7 +281,7 @@ client.add_cog(ManagmentModule(client))
 cogs["ManagementModule"] = {"Running":"No Problems"}
 cogs["SystemUtilitys"] = {"Running":"No Problems"}
 time.sleep(1)
-for ext in os.listdir('bot/cogs'):
+for ext in os.listdir('Bot/cogs'):
     if not ext.startswith(('_', '.')):
         client.load_extension('Cogs.' + ext[:-3])
 
