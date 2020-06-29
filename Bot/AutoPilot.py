@@ -18,6 +18,7 @@ config = [s.replace("\n", "") for s in listoflines4]
 TOKEN = config[0]
 DEFAULT_PREFIX = config[1]
 Profiles = config[2]
+CogLocations = config[3]
 greenSquare = "https://media.discordapp.net/attachments/515326457652707338/723982716219162725/450.png"
 yellowSquare = "https://media.discordapp.net/attachments/515326457652707338/723986430421893160/adidas-adi" \
                "color-yellow-orange-square-shape-s-png-clip-art.png?width=668&height=587"
@@ -281,7 +282,7 @@ client.add_cog(ManagmentModule(client))
 cogs["ManagementModule"] = {"Running":"No Problems"}
 cogs["SystemUtilitys"] = {"Running":"No Problems"}
 time.sleep(1)
-for ext in os.listdir('C:\\Users\\aidan\\PycharmProjects\\Dumpsterfire_V3\\Bot\\Cogs'):
+for ext in os.listdir(CogLocations):
     if not ext.startswith(('_', '.')):
         client.load_extension('Cogs.' + ext[:-3])
 
