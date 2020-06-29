@@ -329,13 +329,11 @@ class ModerationModule(commands.Cog):
 
         await channel.purge(limit=int(amount),check=is_targeted_user)
 
-
     @commands.command(name="mute",description="")
     async def muteUser(self, context):
         guild = context.message.guild
 
-        if not self.utility.getAPLevel(guild,context.message.author.id) >= 1:
-            return
+        ignorePerms = False
 
         if not context.message.mentions:
             try:
@@ -346,13 +344,20 @@ class ModerationModule(commands.Cog):
                     await context.send("Invalid User ID")
                     return
             except IndexError:
-                await context.send("Command Requires A Targeted User")
+                print("Selfmute")
+                user = context.message.author
+                time = str(context.message.content).split(" ", 1)[1]
+                ignorePerms = True
         else:
             try:
                 user = context.message.mentions[0]
                 time = str(context.message.content).split(" ", 2)[2]
             except IndexError:
                 await context.send("Please add the time the user will be muted for, and the reason for the mute")
+                return
+
+        if not self.utility.getAPLevel(guild,context.message.author.id) >= 1:
+            if not ignorePerms:
                 return
 
         if await self.utility.addTimeInfraction(context,user,'mute',time):
