@@ -4,8 +4,8 @@ import discord
 import asyncio
 import time, json
 
-from Bot import AutoPilot, systemUtilitys
-import sys, inspect, types, psutil
+import systemUtilitys
+import psutil
 import _thread as threads
 version = "0.4.0"
 trusted = ['435450974778294273']
@@ -282,9 +282,10 @@ client.add_cog(ManagmentModule(client))
 cogs["ManagementModule"] = {"Running":"No Problems"}
 cogs["SystemUtilitys"] = {"Running":"No Problems"}
 time.sleep(1)
-for ext in os.listdir(CogLocations):
+for ext in os.listdir('Cogs'):
     if not ext.startswith(('_', '.')):
         client.load_extension('Cogs.' + ext[:-3])
+        print("Loading Extenstion: " + str(ext[:-3]))
 
 
 @client.event
@@ -304,6 +305,7 @@ async def on_ready():
 while Running:
     try:
         client.loop.run_until_complete(client.start(TOKEN))
+        time.sleep(10)
     except Exception as e:
         print(str(e))
 

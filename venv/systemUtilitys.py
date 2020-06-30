@@ -1,7 +1,12 @@
 import psutil, os
-from Bot import AutoPilot
 import distutils.dir_util as dirutils
-A: float = 1
+
+greenSquare = "https://media.discordapp.net/attachments/515326457652707338/723982716219162725/450.png"
+yellowSquare = "https://media.discordapp.net/attachments/515326457652707338/723986430421893160/adidas-adi" \
+               "color-yellow-orange-square-shape-s-png-clip-art.png?width=668&height=587"
+redSquare = "https://media.discordapp.net/attachments/515326457652707338/723982767326625832/CCS400RD.png?" \
+            "width=587&height=587"
+atcInvite = "https://discord.gg/qcFBMSS"
 
 def memory():
     Result = psutil.virtual_memory()
@@ -33,9 +38,9 @@ def uptimeStamp(c):
                                                                     seconds = round(seconds))
 
 def getStatus(load, ram, configSize, heartbeat, ping, cache, maxCache):
-    red = AutoPilot.redSquare
-    yellow = AutoPilot.yellowSquare
-    green = AutoPilot.greenSquare
+    red = redSquare
+    yellow = yellowSquare
+    green = greenSquare
 
     level = 0
     light = green
