@@ -275,17 +275,18 @@ async def live_stats(channelID):
         await asyncio.sleep(5)
 
 
-DEFAULT_PREFIX = "-"
+DEFAULT_PREFIX = ">"
 displayed = discord.CustomActivity(name="Being Developed")
 client = commands.Bot(dynamicPrefix,case_insensitive=True,activity=displayed,max_messages=2500)
 client.add_cog(ManagmentModule(client))
 cogs["ManagementModule"] = {"Running":"No Problems"}
 cogs["SystemUtilitys"] = {"Running":"No Problems"}
 time.sleep(1)
-for ext in os.listdir('Cogs'):
+for ext in os.listdir(CogLocations):
     if not ext.startswith(('_', '.')):
-        client.load_extension('Cogs.' + ext[:-3])
         print("Loading Extenstion: " + str(ext[:-3]))
+        client.load_extension('Cogs.' + ext[:-3])
+
 
 
 @client.event
