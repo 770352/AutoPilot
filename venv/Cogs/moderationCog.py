@@ -108,6 +108,16 @@ class ModUtilityModule(commands.Cog):
                     if unBanTime < time.time() and unBanTime != 0:
                         print("Punishment Expired")
                         pass
+                try:
+                    iconData = AutoPilot.ServerSettings[str(guild.id)]['ExtraConfigs']['iconChange']
+                    Ttime = iconData[0]
+                    print(Ttime)
+                    if int(Ttime) < time.time():
+                        print("Guild Icon Change: In Progress")
+                        await self.changeGuildLogo(guild,iconData[1],reason="Time based update")
+                        print("\rGuild Icon Change: Complete")
+                except KeyError:
+                    pass
             await asyncio.sleep(60)
 
 
@@ -206,8 +216,7 @@ class ModUtilityModule(commands.Cog):
             self.saveUserPunishments(guild.id, int(user.id), ban=timeRelease)
             await self.banMember(user,guild)
 
-    async def changeGuildLogo(self,context,iconURL,reason=None):
-        guild = context.message.guild
+    async def changeGuildLogo(self,guild,iconURL,reason=None):
         r = requests.get(iconURL, stream=True)
         with open("tempIcon.png", 'wb') as iconFile:
             shutil.copyfileobj(r.raw, iconFile)
@@ -296,8 +305,6 @@ class ModerationModule(commands.Cog):
         self.client = bot
         self.utility = ModUtilityModule(self.client)
         self.log = actionLogCog.ActionLogModule(self.client)
-
-    @commands.command(name="scheduleIconChange",)
 
     @commands.command(name="purge",description="Bulk Deletes Messages From a Channel \n[userID|amount]")
     async def bulkdelete(self,context):

@@ -3,6 +3,7 @@ import discord
 import AutoPilot
 from Cogs import rankingsCog
 from Cogs import moderationCog
+import time
 
 
 def setup(client):
@@ -181,4 +182,35 @@ class FunStuffModule(commands.Cog):
             await context.send(str(guild) + " has no mail channel configured")
             return
 
+    @commands.command(name="scheduleIconChange", aliases=['planProfileChange'], description=
+    "Schedules an icon change upto 6 years out\nIcon= Attact the png you want to be the servers pfp\n"
+    "Time= Use the format MM/DD/YY or a Unix Timestamp\nNote: Only one event can be scheduled at a time")
+    async def scheduleIconChange(self, context):
+        guild = context.message.guild
+        if not self.modUtility.getAPLevel(guild, context.message.author.id) >= 1:
+            return
+        if context.message.attachments:
+            try:
+                timeStr = str(context.message.content).split(" ", 1)[1]
+                if str(timeStr).find('/') > 0:
+                    Ttime = time.mktime(time.strptime(timeStr, '%m/%d/%Y'))
+                else:
+                    Ttime = timeStr
+                if (int(Ttime) < time.time()) or (int(Ttime) > time.time() + 1.577e+7):
+                    await context.send("Time is outside of provided timeslot")
+                    return
+                newIcon = context.message.attachments[0]
+            except Exception as e:
+                await context.send("Unable to decode provided time: " + str(e))
+                return
+        else:
+            await context.send("Please attach an image to add")
+            return
 
+        guildInfo = self.loadguildinfo(guild.id)
+
+        guildInfo['iconChange'] = [Ttime,newIcon.url]
+
+        self.saveGuildInfo(guild.id,guildInfo)
+
+        await context.send("Scheduled Icon change saved!\nTargeted Time: " + time.ctime(int(Ttime)) + "±60s")

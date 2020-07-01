@@ -232,47 +232,51 @@ async def live_stats(channelID):
     embed = None
     channel = client.get_channel(channelID)
     await channel.purge(limit=100,check=is_client)
-    while True:
-        #ping, heartbeat = await self.Ping(context)
-        ping = 0
-        try:
-            heartbeat = round(client.latency * 1000)
-        except OverflowError:
-            heartbeat = 9999999999
-        # traffic = self.traffic(0)
-        load = psutil.cpu_percent()
-        ram, Rpercent = systemUtilitys.memory()
-        configSize = round(systemUtilitys.configSize(Profiles) * 10) / 10
+    try:
+        while True:
+            #ping, heartbeat = await self.Ping(context)
+            ping = 0
+            try:
+                heartbeat = round(client.latency * 1000)
+            except OverflowError:
+                heartbeat = 9999999999
+            # traffic = self.traffic(0)
+            load = psutil.cpu_percent()
+            ram, Rpercent = systemUtilitys.memory()
+            configSize = round(systemUtilitys.configSize(Profiles) * 10) / 10
 
-        cache = len(client.cached_messages)
-        maxCache = 2500
-        serverUptime = systemUtilitys.uptimeStamp(time.time() - psutil.boot_time())
-        clientUptime = systemUtilitys.uptimeStamp(time.clock())
+            cache = len(client.cached_messages)
+            maxCache = 2500
+            serverUptime = systemUtilitys.uptimeStamp(time.time() - psutil.boot_time())
+            clientUptime = systemUtilitys.uptimeStamp(time.clock())
 
-        clientName = (channel.guild.get_member(int(client.user.id))).nick
-        status, statusLight, error = systemUtilitys.getStatus(load, Rpercent, configSize, heartbeat, ping, cache, maxCache)
-        if embed:
-            embed = discord.Embed(title=status)
-        else:
-            embed = discord.Embed(title=status)
-        if error:
-            embed.description = error
-        embed.set_author(name=str(clientName) + " Diagnostics", icon_url=statusLight, url=atcInvite)
-        #embed.set_thumbnail(url=client.user.avatar_url)
-        embed.add_field(name="CPU Usage", value=str(load) + "%", inline=True)
-        embed.add_field(name="Memory Usage", value=str(ram))
-        embed.add_field(name="Config Size", value=str(configSize) + "KB")
-        embed.add_field(name="Cog Stats", value=str(len(cogs) - 1) + "/" + str(len(cogs)))
-        embed.add_field(name="Cache usage", value=str(cache) + "/" + str(maxCache) + " Messages")
-        embed.add_field(name="API Latency", value=str(heartbeat) + "ms")
-        embed.add_field(name="Server Uptime", value=str(serverUptime), inline=False)
-        embed.add_field(name="Client Uptime", value=str(clientUptime), inline=False)
-        embed.set_footer(text="Version: " + str(version) + " • " + str(time.ctime()))
-        if oldMessage:
-            await oldMessage.edit(embed=embed)
-        else:
-            oldMessage = await channel.send(embed=embed)
-        await asyncio.sleep(5)
+            clientName = (channel.guild.get_member(int(client.user.id))).nick
+            status, statusLight, error = systemUtilitys.getStatus(load, Rpercent, configSize, heartbeat, ping, cache, maxCache)
+            if embed:
+                embed = discord.Embed(title=status)
+            else:
+                embed = discord.Embed(title=status)
+            if error:
+                embed.description = error
+            embed.set_author(name=str(clientName) + " Diagnostics", icon_url=statusLight, url=atcInvite)
+            #embed.set_thumbnail(url=client.user.avatar_url)
+            embed.add_field(name="CPU Usage", value=str(load) + "%", inline=True)
+            embed.add_field(name="Memory Usage", value=str(ram))
+            embed.add_field(name="Config Size", value=str(configSize) + "KB")
+            embed.add_field(name="Cog Stats", value=str(len(cogs) - 1) + "/" + str(len(cogs)))
+            embed.add_field(name="Cache usage", value=str(cache) + "/" + str(maxCache) + " Messages")
+            embed.add_field(name="API Latency", value=str(heartbeat) + "ms")
+            embed.add_field(name="Server Uptime", value=str(serverUptime), inline=False)
+            embed.add_field(name="Client Uptime", value=str(clientUptime), inline=False)
+            embed.set_footer(text="Version: " + str(version) + " • " + str(time.ctime()))
+            if oldMessage:
+                await oldMessage.edit(embed=embed)
+            else:
+                oldMessage = await channel.send(embed=embed)
+            await asyncio.sleep(5)
+    except Exception as e:
+        print(str(e))
+        await client.loop.create_task(live_stats(726106253809418261))
 
 
 DEFAULT_PREFIX = ">"
