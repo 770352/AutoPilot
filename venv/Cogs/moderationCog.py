@@ -111,12 +111,14 @@ class ModUtilityModule(commands.Cog):
                 try:
                     iconData = AutoPilot.ServerSettings[str(guild.id)]['ExtraConfigs']['iconChange']
                     Ttime = iconData[0]
-                    print(Ttime)
                     if int(Ttime) < time.time():
                         print("Guild Icon Change: In Progress")
-                        await self.changeGuildLogo(guild,iconData[1],reason="Time based update")
-                        print("\rGuild Icon Change: Complete")
-                except KeyError:
+                        if await self.changeGuildLogo(guild,iconData[1],reason="Time based update"):
+                            print("\rGuild Icon Change: Complete")
+                            AutoPilot.ServerSettings[str(guild.id)]['ExtraConfigs']['iconChange'] = None
+                        else:
+                            print("\r\rGuild Icon Change: Failed")
+                except:
                     pass
             await asyncio.sleep(60)
 
@@ -217,13 +219,19 @@ class ModUtilityModule(commands.Cog):
             await self.banMember(user,guild)
 
     async def changeGuildLogo(self,guild,iconURL,reason=None):
-        r = requests.get(iconURL, stream=True)
-        with open("tempIcon.png", 'wb') as iconFile:
-            shutil.copyfileobj(r.raw, iconFile)
-        with open("tempIcon.png", "rb") as iconFile:
-            f = iconFile.read()
-            iconByteArray = bytearray(f)
-        await guild.edit(icon=iconByteArray,reason=reason)
+        try:
+            r = requests.get(iconURL, stream=True)
+            with open("tempIcon.png", 'wb') as iconFile:
+                shutil.copyfileobj(r.raw, iconFile)
+            with open("tempIcon.png", "rb") as iconFile:
+                f = iconFile.read()
+                iconByteArray = bytearray(f)
+            await guild.edit(icon=iconByteArray,reason=reason)
+            return True
+        except Exception as e:
+            print(e)
+            return False
+
 
     async def getMentionedUser(self,context):
         if not context.message.mentions:

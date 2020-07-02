@@ -64,13 +64,6 @@ class ManagmentModule(commands.Cog):
     def __init__(self, bot):
         self.client = bot
 
-
-    async def accessWebsite(self,context):
-        embed = discord.Embed(title="Example Stuff: " + str(user) + " -- " + status,
-                              description="Extra example: " + str(user.mention), timestamp=context.message.created_at)
-        link = "https://discord.com/api/oauth2/authorize?client_id=514999044444127233&redirect_uri=https%3A%2F%2F71.227.29.98%3A47675&response_type=code&scope=identify%20email"
-        embed.add_field(name="Website",value="[website]("+str(link)+")")
-
     async def Ping(self,context):
         time0 = time.time()
         channel = context.channel
@@ -131,20 +124,6 @@ class ManagmentModule(commands.Cog):
     async def save(self, context):
         save()
         await context.send("Saved")
-
-    @commands.command()
-    @commands.is_owner()
-    async def update(self,context):
-        save()
-        await context.send("Initating File Transfer")
-        status = systemUtilitys.updateClient("\\\\MAINPC\\Users\\aidan\PycharmProjects\Dumpsterfire_V3\\venv",
-                                    "C:\\Users\\AutoPilot\\PycharmProjects\AutoPilot_V3\\venv")
-        if status:
-            await context.send("Restarting...")
-            exit(0)
-        else:
-            await context.send("Update Failed")
-
 
     @commands.command(aliases=['restart'])
     @commands.is_owner()
@@ -290,7 +269,7 @@ for ext in os.listdir(CogLocations):
     if not ext.startswith(('_', '.')):
         print("Loading Extenstion: " + str(ext[:-3]))
         client.load_extension('Cogs.' + ext[:-3])
-
+print(str(client.extensions))
 
 
 @client.event

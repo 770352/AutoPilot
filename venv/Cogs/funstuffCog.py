@@ -183,7 +183,7 @@ class FunStuffModule(commands.Cog):
             return
 
     @commands.command(name="scheduleIconChange", aliases=['planProfileChange'], description=
-    "Schedules an icon change upto 6 years out\nIcon= Attact the png you want to be the servers pfp\n"
+    "Schedules an icon change up to 6 months out\nIcon= Attach the png you want to be the servers pfp\n"
     "Time= Use the format MM/DD/YY or a Unix Timestamp\nNote: Only one event can be scheduled at a time")
     async def scheduleIconChange(self, context):
         guild = context.message.guild
