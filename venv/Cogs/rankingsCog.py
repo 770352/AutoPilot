@@ -46,6 +46,10 @@ class ActivityModule(commands.Cog):
             userStats['RecentStats']["messages"] = 0
             userStats['RecentStats']['recentSpam'] = 0
             avgActivity = ((userStats['PreviousStats']["avgActivity"] * 3) + userStats["RecentStats"]["activity"])/4
+            if avgActivity > 1:
+                print("Invalid activity")
+                avgActivity = 0
+
             print(str(userStats["RecentStats"]["activity"]) + ":" + str(avgActivity))
             userStats['PreviousStats']["avgActivity"] = avgActivity
             userStats['RecentStats']['activity'] = 0
@@ -72,8 +76,11 @@ class ActivityModule(commands.Cog):
         serverStats["TotalMessages"] += 1
         serverStats["RecentMessages"] += 1
         totalMessages = serverStats["RecentMessages"]
-        quality = (userStats['RecentStats']["wordsSent"]/messages) * 0.25
-        activity = ((messages*quality)/totalMessages)
+        #quality = (userStats['RecentStats']["wordsSent"]/messages) * 0.25
+        activity = ((messages)/totalMessages)
+        if activity > 1:
+            print("Invalid activity")
+            return
         userStats["RecentStats"]["activity"] = activity
         self.saveStats(message.guild.id,message.author.id,serverStats,userStats)
 

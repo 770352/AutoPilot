@@ -38,7 +38,7 @@ if os.path.isfile(Profiles):
 
 def dynamicPrefix(client,message):
     try:
-        prefix = AutoPilot.ServerSettings[str(message.guild.id)]["ServerSettings"]["prefix"]
+        prefix = ServerSettings[str(message.guild.id)]["ServerSettings"]["prefix"]
     except:
         prefix = DEFAULT_PREFIX
     return prefix
@@ -258,7 +258,7 @@ async def live_stats(channelID):
         await client.loop.create_task(live_stats(726106253809418261))
 
 
-DEFAULT_PREFIX = ">"
+DEFAULT_PREFIX = "-"
 displayed = discord.CustomActivity(name="Being Developed")
 client = commands.Bot(dynamicPrefix,case_insensitive=True,activity=displayed,max_messages=2500)
 client.add_cog(ManagmentModule(client))

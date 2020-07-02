@@ -100,7 +100,8 @@ class MusicModule(commands.Cog):
             textToSearch = Srequest.split(' ', 1)[1]
             query = urllib.parse.quote(textToSearch)
             HasResults = False
-            while not HasResults:
+            attempts = 0
+            while not HasResults and attempts < 5:
                 url = "https://www.youtube.com/results?search_query=" + query + "&sp=EgIQAQ%253D%253D"
                 response = urllib.request.urlopen(url)
                 await asyncio.sleep(0.1)
@@ -121,6 +122,8 @@ class MusicModule(commands.Cog):
                     HasResults = True
                 else:
                     await context.send("HTML response is empty")
+                    attempts += 1
+
 
 
             message = await context.send("Select The Song To Play", embed=embed)
