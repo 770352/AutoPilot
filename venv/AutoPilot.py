@@ -67,11 +67,14 @@ class ManagmentModule(commands.Cog):
     async def Ping(self,context):
         time0 = time.time()
         channel = context.channel
+        messageTime = context.message.created_at
+        print(str(messageTime.timestamp()) + ":" + str(time.time()))
+        messageDelay = round(int(time.time()) - int(messageTime.timestamp()) / 1000)
         async with channel.typing():
             time1 = time.time()
             ping = ((time1 - time0) * 1000) / 2
         heartbeat = round(client.latency * 1000)
-        return (ping,heartbeat)
+        return (ping,heartbeat,messageDelay)
 
     async def traffic(self,mode):
         old_value = 0
@@ -103,12 +106,7 @@ class ManagmentModule(commands.Cog):
 
     @commands.command()
     async def ping(self, context):
-        time0 = time.time()
-        channel = context.channel
-        async with channel.typing():
-            time1 = time.time()
-            ping = ((time1 - time0) * 1000) / 2
-        heartbeat = round(client.latency * 1000)
+        ping, heartbeat, messageDelay = await self.Ping(context)
         await context.send("Ping: " + str(round(ping)) + "ms\nHeartbeat: " + str(heartbeat) + "ms")
 
     @commands.command()
@@ -155,7 +153,7 @@ class ManagmentModule(commands.Cog):
 
     @commands.command()
     async def diagnostics(self,context):
-        ping, heartbeat = await self.Ping(context)
+        ping, heartbeat, messageDelay = await self.Ping(context)
         #traffic = self.traffic(0)
         load = psutil.cpu_percent()
         ram, Rpercent = systemUtilitys.memory()
@@ -265,6 +263,7 @@ client.add_cog(ManagmentModule(client))
 cogs["ManagementModule"] = {"Running":"No Problems"}
 cogs["SystemUtilitys"] = {"Running":"No Problems"}
 time.sleep(1)
+client.remove_command('help')
 for ext in os.listdir(CogLocations):
     if not ext.startswith(('_', '.')):
         print("Loading Extenstion: " + str(ext[:-3]))
@@ -291,5 +290,5 @@ while Running:
         client.loop.run_until_complete(client.start(TOKEN))
         time.sleep(10)
     except Exception as e:
-        print(str(e))
+        print("Close Out Error: " + str(e))
 

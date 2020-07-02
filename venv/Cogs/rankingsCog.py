@@ -47,7 +47,7 @@ class ActivityModule(commands.Cog):
             userStats['RecentStats']['recentSpam'] = 0
             avgActivity = ((userStats['PreviousStats']["avgActivity"] * 3) + userStats["RecentStats"]["activity"])/4
             if avgActivity > 1:
-                print("Invalid activity")
+                print("Invalid AvgActivity")
                 avgActivity = 0
 
             print(str(userStats["RecentStats"]["activity"]) + ":" + str(avgActivity))

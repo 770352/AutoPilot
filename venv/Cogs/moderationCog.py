@@ -346,6 +346,7 @@ class ModerationModule(commands.Cog):
         await context.message.delete()
         await channel.purge(limit=int(amount),check=is_targeted_user)
 
+    @commands.bot_has_permissions(manage_roles=True)
     @commands.command(name="mute",description="")
     async def muteUser(self, context):
         guild = context.message.guild
