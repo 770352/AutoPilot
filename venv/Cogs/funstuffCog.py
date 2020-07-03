@@ -39,7 +39,7 @@ class FunStuffModule(commands.Cog):
                 return guild
         return None
 
-    @commands.command()
+    @commands.command(brief="Configure Suggestion Channel, Server Mod's only")
     async def setSuggestion(self,context):
         guild = context.message.guild
         member = context.message.author
@@ -89,7 +89,7 @@ class FunStuffModule(commands.Cog):
             await context.send("Suggestion Channel Not Configured")
         pass
 
-    @commands.command()
+    @commands.command(brief="Configure ModMail Channel, Server Mod's only")
     async def configModmail(self, context):
         guild = context.message.guild
         if not self.modUtility.getAPLevel(guild, context.message.author.id) > 2:
@@ -121,7 +121,8 @@ class FunStuffModule(commands.Cog):
         self.saveGuildInfo(guild.id, extraConfigs)
         await context.send("ModMail Channel Configured")
 
-    @commands.command(name="modmail", aliases=['mail'],help="Used to send messages to a servers modMail channel"
+    @commands.command(name="modmail", aliases=['mail'],brief="Send Mail to moderators of servers",
+                      help="Used to send messages to a servers modMail channel"
                                                             "\n---In DM's---\n-modmail [serverID|serverAcronym] your message"
                                                             "\n---In a server---\n-modmail your message")
     async def modmail(self, context):

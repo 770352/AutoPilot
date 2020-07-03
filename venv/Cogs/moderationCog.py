@@ -122,9 +122,7 @@ class ModUtilityModule(commands.Cog):
                     pass
             await asyncio.sleep(60)
 
-
     def getAPLevel(self,guild,userID):
-
         if str(userID) in AutoPilot.trusted:
             return 4
         elif userID == guild.owner_id:
@@ -307,6 +305,14 @@ class ModUtilityModule(commands.Cog):
 
         guild = context.message.guild
         pass
+
+    @commands.command(brief='Changes Custom Prefix')
+    async def setprefix(self, context, prefix):
+        user = context.message.author
+        guild = context.message.guild
+        if self.getAPLevel(guild, user.id):
+            AutoPilot.ServerSettings[str(context.message.guild.id)]["ServerSettings"].update({"prefix": str(prefix)})
+            await context.send("Prefix Set To: " + str(prefix))
 
 class ModerationModule(commands.Cog):
     def __init__(self, bot):

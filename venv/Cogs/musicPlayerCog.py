@@ -38,6 +38,22 @@ class MusicModule(commands.Cog):
         self.queues = {}
         self.next = asyncio.Event()
 
+    @commands.Cog.listener()
+    async def on_ready(self):
+        self.client.loop.create_task(self.removeFromAFK())
+
+    async def removeFromAFK(self):
+        while True:
+            guilds = await self.client.fetch_guilds(limit=150).flatten()
+            for guild in guilds:
+                guild = self.client.get_guild(int(guild.id))
+                afkChannel = guild.afk_channel
+                if afkChannel:
+                    for member in afkChannel.members:
+                        await member.edit(voice_channel=None)
+            await asyncio.sleep(1)
+
+
     async def joinVC(self,context):
         channel = context.message.author.voice.channel
         if not channel:
@@ -50,7 +66,6 @@ class MusicModule(commands.Cog):
         return voice
 
     async def autoPlay(self,context,VC):
-
         print(str(self.queues))
         guildID = context.guild.id
         if len(self.queues[str(guildID)]['Queue']) < 1:

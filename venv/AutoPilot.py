@@ -104,26 +104,18 @@ class ManagmentModule(commands.Cog):
         if mode is 1:
             return network
 
-    @commands.command()
+    @commands.command(brief="Returns the client to discord latency")
     async def ping(self, context):
         ping, heartbeat, messageDelay = await self.Ping(context)
         await context.send("Ping: " + str(round(ping)) + "ms\nHeartbeat: " + str(heartbeat) + "ms")
 
-    @commands.command()
-    async def setprefix(self,context,prefix):
-        user = context.message.author
-        guild = context.message.guild
-        if self.modCog.getAPLevel(guild,user.id):
-            AutoPilot.ServerSettings[str(context.message.guild.id)]["ServerSettings"].update({"prefix": str(prefix)})
-            await context.send("Prefix Set To: " + str(prefix))
-
-    @commands.command()
+    @commands.command(brief="Force saves the config file; Host only")
     @commands.is_owner()
     async def save(self, context):
         save()
         await context.send("Saved")
 
-    @commands.command(aliases=['restart'])
+    @commands.command(aliases=['restart'],brief='Disconnects AutoPilot; Host only')
     @commands.is_owner()
     async def closeDown(self,context):
         save()
@@ -131,27 +123,19 @@ class ManagmentModule(commands.Cog):
         await client.logout()
         exit(0)
 
-    @commands.command()
+    @commands.command(brief="Hard stops the client; Host only")
     @commands.is_owner()
     async def terminate(self,context):
         await context.send("Hard Stopping The AutoPilot Executable")
         exit(-1)
         await context.send("Failed To Stop")
 
-    @commands.command()
-    @commands.is_owner()
-    async def reloadCog(self, context, cog):
-        cogs[str(cog)] = {"Restarting": "Being Removed"}
-        self.client.remove_cog(cog)
-        cogs[str(cog)] = {"Restarting": "Removed"}
-
-
-    @commands.command()
+    @commands.command(brief="Returns an the bot invite link")
     async def invite(self,context):
         await context.send("https://discord.com/api/oauth2/authorize?client_id=514999044444127233&permissions=8&redirect"
                            "_uri=https%3A%2F%2Fdiscord.com&scope=bot")
 
-    @commands.command()
+    @commands.command(brief='List Client Status, and statistics')
     async def diagnostics(self,context):
         ping, heartbeat, messageDelay = await self.Ping(context)
         #traffic = self.traffic(0)
@@ -184,21 +168,12 @@ class ManagmentModule(commands.Cog):
         embed.set_footer(text="Version: " + str(version))
         await context.send(embed=embed)
 
-    @commands.command()
+    @commands.command(brief="Clears the message cache and reloads the bot; Host only")
     @commands.is_owner()
     async def prugeCache(self,context):
         await context.send("Purging client cache, please wait")
         client.clear()
         await context.send("Client cache pruged")
-
-    @commands.command()
-    async def cogs(self,context):
-        embed = discord.Embed(title="Cog Ops")
-        for cog,stat in cogs.items():
-            for status,code in stat.items():
-                    embed.add_field(name=cog ,value=status + ": " + code)
-        await context.send(embed=embed)
-
 
 def is_client(message):
     return message.author == client.user
@@ -268,7 +243,6 @@ for ext in os.listdir(CogLocations):
     if not ext.startswith(('_', '.')):
         print("Loading Extenstion: " + str(ext[:-3]))
         client.load_extension('Cogs.' + ext[:-3])
-print(str(client.extensions))
 
 
 @client.event

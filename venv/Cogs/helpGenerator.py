@@ -15,28 +15,32 @@ class HelpGenerator(commands.Cog):
     def __init__(self,client):
         self.client = client
 
-    @commands.command(name='help', aliases=['about'])
-    async def customhelp(self,context,targetedCommand=None):
-        loadedCommands = self.client.commands
+    @commands.command(name='help', aliases=['about'], brief='Creates this message',
+                      description='Created a embed with all bot commands')
+    async def customHelp(self,context,targetedCommand=None):
         if targetedCommand:
-            clientName = (context.message.guild.get_member(int(self.client.user.id))).nick
-            embed = discord.Embed(title=str(clientName) + " Help",description="Command: " + targetedCommand)
-            embed.set_thumbnail(url=self.client.user.avatar_url)
-            command = None
-            for Rcommand in loadedCommands:
-                if str(Rcommand.name).lower() == str(targetedCommand).lower():
-                    command = Rcommand
-                    break
-            if command:
-                embed.add_field(name='Description', value=command.description, inline=False)
-                embed.add_field(name="Aliases", value=command.aliases if len(command.aliases) > 0 else "None",inline=False)
-                embed.add_field(name="Host Module", value=command.cog.qualified_name)
-                embed.set_footer(text="Could Execute Here? " + ("No" if False in command.checks else "Yes"))
-            else:
-                embed.add_field(name='Command Not Found', value='Please make sure you spell the command correctly')
-            await context.send(embed=embed)
+            await self.singleCommandHelp(context,targetedCommand)
         else:
             await self.createHelpPages(context)
+
+    async def singleCommandHelp(self,context,targetedCommand):
+        loadedCommands = self.client.commands
+        clientName = (context.message.guild.get_member(int(self.client.user.id))).nick
+        embed = discord.Embed(title=str(clientName) + " Help", description="Command: " + targetedCommand)
+        embed.set_thumbnail(url=self.client.user.avatar_url)
+        command = None
+        for Rcommand in loadedCommands:
+            if str(Rcommand.name).lower() == str(targetedCommand).lower():
+                command = Rcommand
+                break
+        if command:
+            embed.add_field(name='Description', value=command.description, inline=False)
+            embed.add_field(name="Aliases", value=command.aliases if len(command.aliases) > 0 else "None", inline=False)
+            embed.add_field(name="Host Module", value=command.cog.qualified_name)
+            embed.set_footer(text="Could Execute Here? " + ("No" if False in command.checks else "Yes"))
+        else:
+            embed.add_field(name='Command Not Found', value='Please make sure you spell the command correctly')
+        await context.send(embed=embed)
 
     async def createHelpPages(self,context):
         loadedModules = self.client.cogs
