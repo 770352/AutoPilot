@@ -84,14 +84,11 @@ def getStatus(load, ram, configSize, heartbeat, ping, cache, maxCache):
             probString = probString + ", " + problem
         return status, light, probString
 
-def updateClient(origin,target):
-    print('Copy Started')
-    if os.path.isdir(origin):
-        print("Origin Exists, copying")
-        dirutils.copy_tree(origin, target)
-        print("Copy Finished")
-        return True
+def updateClient():
+    cmdResult = os.popen('git pull')
+    if cmdResult == 'Already up to date.':
+        return 0
     else:
-        return False
+        return 1
 
 
