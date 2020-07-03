@@ -116,17 +116,17 @@ class ManagmentModule(commands.Cog):
         await context.send("Saved")
 
     @commands.is_owner()
-    @commands.command(name='Update',brief="Updates client and then restarts the client; Host Only")
+    @commands.command(name='update',brief="Updates client and then restarts the client; Host Only")
     async def update(self,context):
         save()
         message = await context.send("Preparing To Update Client")
         res = systemUtilitys.updateClient()
         if res == 0:
-            await message.edit("Client Already Up To Date")
+            await message.edit(content="Client Already Up To Date")
         elif res == 1:
-            await message.edit("Client Updated, Restarting")
+            await message.edit(content="Client Updated, Restarting")
         else:
-            await message.edit("Something Went Wrong")
+            await message.edit(content="Something Went Wrong")
 
     @commands.command(aliases=['restart'],brief='Disconnects AutoPilot; Host only')
     @commands.is_owner()
