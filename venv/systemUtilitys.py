@@ -85,9 +85,9 @@ def getStatus(load, ram, configSize, heartbeat, ping, cache, maxCache):
         return status, light, probString
 
 def updateClient():
-    cmdResult = os.popen('git pull')
+    cmdResult = os.popen('git pull').read()
     print(str(cmdResult))
-    if cmdResult == 'Already up to date.':
+    if cmdResult.startswith('Already up to date.'):
         return 0
     else:
         return 1
