@@ -125,6 +125,8 @@ class ManagmentModule(commands.Cog):
             await message.edit(content="Client Already Up To Date")
         elif res == 1:
             await message.edit(content="Client Updated, Restarting")
+            await client.logout()
+            exit(2)
         else:
             await message.edit(content="Something Went Wrong")
 
