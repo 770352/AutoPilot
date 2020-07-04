@@ -21,7 +21,7 @@ class ActionLogModule(commands.Cog):
     async def on_ready(self):
         if (AutoPilot.ServerSettings['ProfilesInfo']['LastSaveRaw'] < (time.time() - 900)) or (psutil.boot_time() - time.time() < 500):
             print("Downtime")
-            await self.serviceRestored(AutoPilot.ServerSettings['ProfilesInfo']['LastSaveRaw'])
+            #await self.serviceRestored(AutoPilot.ServerSettings['ProfilesInfo']['LastSaveRaw'])
 
     async def serviceRestored(self,downStamp,reason='N/A'):
         guilds = await self.client.fetch_guilds(limit=150).flatten()
