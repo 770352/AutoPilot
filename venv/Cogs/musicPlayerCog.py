@@ -39,19 +39,19 @@ class MusicModule(commands.Cog):
         self.next = asyncio.Event()
 
     @commands.Cog.listener()
-    async def on_ready(self):
-        self.client.loop.create_task(self.removeFromAFK())
+    async def on_voice_state_update(self, member, before, after):
+        await self.removeFromAFK()
 
     async def removeFromAFK(self):
-        while True:
-            guilds = await self.client.fetch_guilds(limit=150).flatten()
-            for guild in guilds:
-                guild = self.client.get_guild(int(guild.id))
-                afkChannel = guild.afk_channel
-                if afkChannel:
-                    for member in afkChannel.members:
-                        await member.edit(voice_channel=None)
-            await asyncio.sleep(1)
+        await asyncio.sleep(1)
+        guilds = await self.client.fetch_guilds(limit=150).flatten()
+        for guild in guilds:
+            guild = self.client.get_guild(int(guild.id))
+            afkChannel = guild.afk_channel
+            if afkChannel:
+                for member in afkChannel.members:
+                    await member.edit(voice_channel=None)
+
 
 
     async def joinVC(self,context):

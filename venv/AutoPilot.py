@@ -2,7 +2,7 @@ from discord.ext import commands
 import os
 import discord
 import asyncio
-import time, json
+import time, json, traceback, sys
 
 import systemUtilitys
 import psutil
@@ -25,7 +25,7 @@ yellowSquare = "https://media.discordapp.net/attachments/515326457652707338/7239
 redSquare = "https://media.discordapp.net/attachments/515326457652707338/723982767326625832/CCS400RD.png?" \
             "width=587&height=587"
 atcInvite = "https://discord.gg/qcFBMSS"
-
+stacktracebuffer = None
 
 
 if os.path.isfile(Profiles):
@@ -190,9 +190,18 @@ class ManagmentModule(commands.Cog):
         client.clear()
         await context.send("Client cache pruged")
 
+    @commands.command(brief="Returns the most recent error's traceback, Host Only")
+    @commands.is_owner()
+    async def traceback(self,context):
+        await context.send("```" + str(stacktracebuffer[1]) + "```")
+
+    @commands.command(brief="testing error handler")
+    @commands.is_owner()
+    async def createError(self,context):
+        raise NotImplementedError
+
 def is_client(message):
     return message.author == client.user
-
 
 async def live_stats(channelID):
     oldMessage = None
@@ -273,6 +282,19 @@ async def on_ready():
     displayed = discord.CustomActivity(name="Being Developed")
     await client.change_presence(status=discord.Status.online,activity=displayed)
     await client.loop.create_task(live_stats(726106253809418261))
+
+@client.event
+async def on_command_error(context, exception):
+    global stacktracebuffer
+    guild = context.message.guild
+    stacktracebuffer = \
+        [exception,''.join(traceback.format_exception(type(exception), exception, exception.__traceback__))]
+    errorType = str(exception)
+    print(str(stacktracebuffer[1]))
+    embed = discord.Embed(title=client.user.name + " has encountered an error",color=0xFF0000,
+                          description="Error: \"" +str(errorType) + "\"")
+    embed.add_field(name="Invoked Command",value=str(context.message.content))
+    await context.send(embed=embed)
 
 while Running:
     try:

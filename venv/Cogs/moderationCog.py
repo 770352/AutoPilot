@@ -171,7 +171,6 @@ class ModUtilityModule(commands.Cog):
         else:
             return (0, 1)
 
-
     async def giveRole(self,member,role):
         roles = member.roles
         roles.append(role)
@@ -229,7 +228,6 @@ class ModUtilityModule(commands.Cog):
         except Exception as e:
             print(e)
             return False
-
 
     async def getMentionedUser(self,context):
         if not context.message.mentions:
@@ -295,13 +293,13 @@ class ModUtilityModule(commands.Cog):
 
     @commands.command(brief="Removes a member to this servers mod list; Admins Only")
     async def delMod(self, context):
-
+        raise NotImplementedError
         guild = context.message.guild
         pass
 
     @commands.command(brief="Removes a member to this servers Admin list; Server Onwer Only")
     async def delAdmin(self, context):
-
+        raise NotImplementedError
         guild = context.message.guild
         pass
 
