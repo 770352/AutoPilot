@@ -246,7 +246,7 @@ class ModUtilityModule(commands.Cog):
 
         return user
 
-    @commands.command()
+    @commands.command(brief="Adds the role to be used for muting users; Mods Only")
     async def addMuteRole(self,context):
         roles = context.message.role_mentions
         guild = context.message.guild
@@ -259,9 +259,8 @@ class ModUtilityModule(commands.Cog):
         else:
             await context.send("A role is required to be added")
 
-    @commands.command()
+    @commands.command(brief="Adds a member to this servers mod list; Admins Only")
     async def addMod(self, context):
-
         mod = await self.getMentionedUser(context)
         guild = context.message.guild
 
@@ -279,7 +278,7 @@ class ModUtilityModule(commands.Cog):
         await context.send(str(mod) + " Added To Mod Team")
         pass
 
-    @commands.command()
+    @commands.command(brief="Adds a member to this servers Admin list; Server Owner Only")
     async def addAdmin(self, context):
 
         admin = await self.getMentionedUser(context)
@@ -294,13 +293,13 @@ class ModUtilityModule(commands.Cog):
             AutoPilot.ServerSettings[str(guild.id)]["ServerStaff"].update({"Admins":[int(admin.id)]})
         pass
 
-    @commands.command()
+    @commands.command(brief="Removes a member to this servers mod list; Admins Only")
     async def delMod(self, context):
 
         guild = context.message.guild
         pass
 
-    @commands.command()
+    @commands.command(brief="Removes a member to this servers Admin list; Server Onwer Only")
     async def delAdmin(self, context):
 
         guild = context.message.guild
