@@ -2,7 +2,7 @@ from discord.ext import commands
 import discord
 import psutil
 import AutoPilot
-from Cogs import moderationCog, rankingsCog
+from Cogs import moderationCog, rankingsCog, __actionLogUtilitys__
 import time
 from itertools import islice
 
@@ -15,6 +15,7 @@ class ActionLogModule(commands.Cog):
         self.client = bot
         self.modUtility = moderationCog.ModUtilityModule(self.client)
         self.ranking = rankingsCog.ActivityModule(self.client)
+        self.utilitys = __actionLogUtilitys__.utilitys(self.client)
         self.ignoreRole = []
 
     @commands.Cog.listener()
@@ -43,14 +44,21 @@ class ActionLogModule(commands.Cog):
         except KeyError as e:
             return None
 
+    def getWelcomeChannel(self, guildID):
+        try:
+            channel = AutoPilot.ServerSettings[str(guildID)]["ServerSettings"]["welcomeChannel"]
+            return channel
+        except KeyError as e:
+            return None
+
     async def sendLog(self, guildID, embed):
         actionLogID = self.getActionChannel(guildID)
         if actionLogID:
             channel = self.client.get_channel(int(actionLogID))
             await channel.send(embed=embed)
 
-    @commands.command()
-    async def Setlogchannel(self,context):
+    @commands.command(brief="Configure server log channel; Server Staff Only")
+    async def setlogchannel(self,context):
         targetchannel = context.message.channel_mentions[0]
         guild = context.message.guild
 
@@ -66,6 +74,41 @@ class ActionLogModule(commands.Cog):
         except KeyError:
             AutoPilot.ServerSettings[str(context.message.guild.id)].update({"ServerSettings":{"logChannel": targetchannel.id}})
         await context.send("AutoLog Channel Configured")
+
+    @commands.command(brief="Configure server welcome channel; Server Staff Only")
+    async def setWelcomeChannel(self,context):
+        targetchannel = context.message.channel_mentions[0]
+        guild = context.message.guild
+        if not self.modUtility.getAPLevel(guild, context.message.author.id) >= 1:
+            return
+        try:
+            await targetchannel.send("Permissions test")
+        except:
+            await context.send("Incorrect Permissions")
+            return
+        try:
+            AutoPilot.ServerSettings[str(context.message.guild.id)]["ServerSettings"].update(
+                {"welcomeChannel": targetchannel.id})
+        except KeyError:
+            AutoPilot.ServerSettings[str(context.message.guild.id)].update(
+                {"ServerSettings": {"welcomeChannel": targetchannel.id}})
+        await context.send("Welcome Channel Configured")
+
+    @commands.command()
+    async def configJoinMessage(self, context, textMessage):
+        guild = context.message.guild
+        if not self.modUtility.getAPLevel(guild, context.message.author.id) >= 1:
+            return
+        self.utilitys.setMessageTemplate(guild.id, 'welcomeJoin', textMessage)
+        await context.send("Message configured")
+
+    @commands.command()
+    async def configLeaveMessage(self, context, textMessage):
+        guild = context.message.guild
+        if not self.modUtility.getAPLevel(guild, context.message.author.id) >= 1:
+            return
+        self.utilitys.setMessageTemplate(guild.id, 'welcomeLeave', textMessage)
+        await context.send("Message configured")
 
     @commands.Cog.listener()
     async def on_member_update(self,memberB,memberA):
@@ -328,7 +371,13 @@ class ActionLogModule(commands.Cog):
             embed.set_footer(text="UserID:" + str(userID))
             await channel.send(embed=embed)
         self.ignoreRole.remove(int(Member.id))
-        pass
+        welcomeID = self.getWelcomeChannel(guildID)
+        if welcomeID:
+            channel = self.client.get_channel(int(welcomeID))
+            message = await self.utilitys.generateWelcomeJoin(Member.guild, Member)
+            if message:
+                await channel.send(message)
+
 
     @commands.Cog.listener()
     async def on_member_remove(self, Member):
@@ -354,7 +403,12 @@ class ActionLogModule(commands.Cog):
             self.modUtility.loadUserPunishments(guildID, userID)
             self.modUtility.getUserInfractions(guildID, userID)
             self.modUtility.updateUserRoles(guildID, userID, roles)
-        pass
+        welcomeID = self.getWelcomeChannel(guildID)
+        if welcomeID:
+            channel = self.client.get_channel(int(welcomeID))
+            message = await self.utilitys.generateWelcomeLeave(Member.guild, Member)
+            if message:
+                await channel.send(message)
 
     @commands.Cog.listener()
     async def on_guild_join(self, Guild):

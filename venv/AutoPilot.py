@@ -193,12 +193,18 @@ class ManagmentModule(commands.Cog):
     @commands.command(brief="Returns the most recent error's traceback, Host Only")
     @commands.is_owner()
     async def traceback(self,context):
+        if len(stacktracebuffer[1]) > 2000:
+            await context.send("This error was too catastrophic to be able to print to discord, error was saved to logs")
+            return
         await context.send("```" + str(stacktracebuffer[1]) + "```")
+
+    async def errorCreator(self,context):
+        await self.createError(context)
 
     @commands.command(brief="testing error handler")
     @commands.is_owner()
     async def createError(self,context):
-        raise NotImplementedError
+        await self.errorCreator(context)
 
 def is_client(message):
     return message.author == client.user
@@ -287,10 +293,14 @@ async def on_ready():
 async def on_command_error(context, exception):
     global stacktracebuffer
     guild = context.message.guild
+    if isinstance(exception, (commands.CommandNotFound)):
+        await context.send("Command \"" + str(context.invoked_with) + "\" Not Found")
+        return
     stacktracebuffer = \
         [exception,''.join(traceback.format_exception(type(exception), exception, exception.__traceback__))]
     errorType = str(exception)
     print(str(stacktracebuffer[1]))
+
     embed = discord.Embed(title=client.user.name + " has encountered an error",color=0xFF0000,
                           description="Error: \"" +str(errorType) + "\"")
     embed.add_field(name="Invoked Command",value=str(context.message.content))
