@@ -1,13 +1,12 @@
 from discord.ext import commands
 import asyncio
-import wordfilter
 import AutoPilot
 from Cogs import rankingsCog
 from Cogs import moderationCog
 
-
 def setup(client):
     client.add_cog(FilterModule(client))
+
 
 class FilterModule(commands.Cog):
     def __init__(self, bot):
@@ -15,26 +14,25 @@ class FilterModule(commands.Cog):
         self.modUtility = moderationCog.ModUtilityModule(self.client)
         self.memberdata = rankingsCog.ActivityModule(self.client)
         self.running = True
-        wordfilter.clear_list()
-        wordfilter.add_words(["fuck","shit", "cock", "pussy", "nigga", "nigger", "cunt", "fag"])
+        self.blacklist = ["asshole", "pussy", "nigga", "nigger", "cunt", "fag", "faggot"]
 
     def loadguildinfo(self, guildID):
         try:
             stats = AutoPilot.ServerSettings[str(guildID)]['ExtraConfigs']
         except KeyError:
-            AutoPilot.ServerSettings[str(guildID)].update({'ExtraConfigs':{}})
+            AutoPilot.ServerSettings[str(guildID)].update({'ExtraConfigs': {}})
         stats = AutoPilot.ServerSettings[str(guildID)]['ExtraConfigs']
         return stats
 
-    def saveGuildInfo(self,guildID,info):
+    def saveGuildInfo(self, guildID, info):
         AutoPilot.ServerSettings[str(guildID)]['ExtraConfigs'] = info
 
     @commands.command()
-    async def toggleFilter(self,context):
+    async def toggleFilter(self, context):
         guild = context.message.guild
         member = context.message.author
 
-        if not self.modUtility.getAPLevel(guild,context.message.author.id) >= 1:
+        if not self.modUtility.getAPLevel(guild, context.message.author.id) >= 1:
             return
 
         configs = self.loadguildinfo(guild.id)
@@ -47,9 +45,8 @@ class FilterModule(commands.Cog):
         self.saveGuildInfo(guild.id, configs)
         await context.send("Filter State: " + str(currentState))
 
-
     @commands.Cog.listener()
-    async def on_message(self,message):
+    async def on_message(self, message):
         try:
             guild = message.guild
             member = message.author
@@ -62,7 +59,7 @@ class FilterModule(commands.Cog):
             currentState = False
         if not currentState:
             return
-        isbadWord = wordfilter.blacklisted(str(message.content))
+        isbadWord = any(word in message.content for word in self.blacklist)
         if isbadWord:
             await message.delete()
             channel = message.channel

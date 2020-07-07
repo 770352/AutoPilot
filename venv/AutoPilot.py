@@ -145,6 +145,13 @@ class ManagmentModule(commands.Cog):
         exit(-1)
         await context.send("Failed To Stop")
 
+    @commands.command(brief="Reboots AutoPilots Host Machine; Host Only")
+    @commands.is_owner()
+    async def reboot(self, context):
+        await context.send("Rebooting")
+        os.system('shutdown /r /f')
+        exit(0)
+
     @commands.command(brief="Returns an the bot invite link")
     async def invite(self, context):
         await context.send(
@@ -190,7 +197,7 @@ class ManagmentModule(commands.Cog):
     async def prugeCache(self, context):
         await context.send("Purging client cache, please wait")
         client.clear()
-        await context.send("Client cache pruged")
+        await context.send("Client cache purged")
 
     @commands.command(brief="Returns the most recent error's traceback, Host Only")
     @commands.is_owner()
@@ -301,7 +308,7 @@ async def on_ready():
 async def on_command_error(context, exception):
     global stacktracebuffer
     guild = context.message.guild
-    if isinstance(exception, (commands.CommandNotFound)):
+    if isinstance(exception, commands.CommandNotFound):
         await context.send("Command \"" + str(context.invoked_with) + "\" Not Found")
         return
     stacktracebuffer = \
