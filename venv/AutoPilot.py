@@ -149,6 +149,8 @@ class ManagmentModule(commands.Cog):
     @commands.is_owner()
     async def reboot(self, context):
         await context.send("Rebooting")
+        save()
+        await client.logout()
         os.system('shutdown /r /f')
         exit(0)
 
