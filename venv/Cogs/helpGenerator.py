@@ -17,13 +17,13 @@ class HelpGenerator(commands.Cog):
 
     @commands.command(name='help', aliases=['about'], brief='Creates this message',
                       description='Created a embed with all bot commands')
-    async def customHelp(self,context,targetedCommand=None):
+    async def customHelp(self, context, targetedCommand=None):
         if targetedCommand:
-            await self.singleCommandHelp(context,targetedCommand)
+            await self.singleCommandHelp(context, targetedCommand)
         else:
             await self.createHelpPages(context)
 
-    async def singleCommandHelp(self,context,targetedCommand):
+    async def singleCommandHelp(self, context, targetedCommand):
         loadedCommands = self.client.commands
         clientName = (context.message.guild.get_member(int(self.client.user.id))).nick
         embed = discord.Embed(title=str(clientName) + " Help", description="Command: " + targetedCommand)
@@ -63,8 +63,8 @@ class HelpGenerator(commands.Cog):
                     embed = discord.Embed(title="Module: " + cog.qualified_name)
                     embed.set_thumbnail(url=self.client.user.avatar_url)
                     embed.add_field(name=str(context.prefix) + str(command.name), value=
-                    command.brief if command.brief else (str(command.description).split('\n',1)[0])
-                    if len(command.description) > 0 else "None",inline=False)
+                    command.brief if command.brief else (str(command.description).split('\n', 1)[0])
+                    if len(command.description) > 0 else "None", inline=False)
             pages.append(embed)
         await self.createInteractiveHelp(context, pages)
 

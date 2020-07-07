@@ -24,7 +24,7 @@ class ActionLogModule(commands.Cog):
             print("Downtime")
             #await self.serviceRestored(AutoPilot.ServerSettings['ProfilesInfo']['LastSaveRaw'])
 
-    async def serviceRestored(self,downStamp,reason='N/A'):
+    async def serviceRestored(self, downStamp, reason='N/A'):
         guilds = await self.client.fetch_guilds(limit=150).flatten()
         for guild in guilds:
             actionLogID = self.getActionChannel(guild.id)
@@ -58,7 +58,7 @@ class ActionLogModule(commands.Cog):
             await channel.send(embed=embed)
 
     @commands.command(brief="Configure server log channel; Server Staff Only")
-    async def setlogchannel(self,context):
+    async def setlogchannel(self, context):
         targetchannel = context.message.channel_mentions[0]
         guild = context.message.guild
 
@@ -111,7 +111,7 @@ class ActionLogModule(commands.Cog):
         await context.send("Message configured")
 
     @commands.Cog.listener()
-    async def on_member_update(self,memberB,memberA):
+    async def on_member_update(self, memberB, memberA):
         actionLogID = self.getActionChannel(memberA.guild.id)
         if actionLogID:
             pass
@@ -125,14 +125,14 @@ class ActionLogModule(commands.Cog):
             await self.on_member_changeNick(memberB,memberA)
 
     def Diff(self, li1, li2):
-        return (list(set(li1) - set(li2)))
+        return list(set(li1) - set(li2))
 
-    async def on_member_roleChange(self,memberB,memberA):
+    async def on_member_roleChange(self, memberB, memberA):
         if memberA.id in self.ignoreRole:
             return
         actionLogID = self.getActionChannel(memberA.guild.id)
         if actionLogID:
-            removedRoles = self.Diff(memberB.roles,memberA.roles)
+            removedRoles = self.Diff(memberB.roles, memberA.roles)
             addedRoles = self.Diff(memberA.roles, memberB.roles)
             print(str(removedRoles) + ":" + str(addedRoles))
             embed = discord.Embed(title=str(memberA),
@@ -145,7 +145,7 @@ class ActionLogModule(commands.Cog):
                 NroleString = str(newroles[0].mention)
                 for role in newroles[1:]:
                     NroleString = str(role.mention) + ", " + NroleString
-                embed.add_field(name="New Roles",value=str(NroleString),inline=False)
+                embed.add_field(name="New Roles", value=str(NroleString), inline=False)
             except:
                 pass
             try:
@@ -169,7 +169,7 @@ class ActionLogModule(commands.Cog):
             embed.set_thumbnail(url=memberA.avatar_url)
             embed.set_footer(text="UserID: " + str(memberA.id))
             if memberB.nick:
-                embed.add_field(name="Orignal",value=str(memberB.nick),inline=False)
+                embed.add_field(name="Orignal", value=str(memberB.nick), inline=False)
                 embed.add_field(name="Edited", value=str(memberA.nick), inline=False)
             else:
                 embed.add_field(name="Orignal", value="N/A", inline=False)
@@ -241,7 +241,7 @@ class ActionLogModule(commands.Cog):
     async def on_bulk_message_delete(self, messages):
         if len(messages) < 50:
             messageList = iter(messages)
-            length_to_split = [10,10,10,10,10]
+            length_to_split = [10, 10, 10, 10, 10]
             splitList = [list(islice(messageList, elem))for elem in length_to_split]
             for Messages in splitList:
                     try:
