@@ -144,8 +144,6 @@ class ActivityModule(commands.Cog):
         activityBreakdown[status] += 1
         deviceBreakdown[device] += 1
 
-        print(str(activityBreakdown) + " : " + str(deviceBreakdown))
-
     # Message Handler
     @commands.Cog.listener()
     async def on_message(self, message):
