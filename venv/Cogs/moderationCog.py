@@ -459,10 +459,10 @@ class ModerationModule(commands.Cog):
         totalActivity = sum(combinedActivity)
         print(combinedActivity)
         totalDevice = sum(combinedDevice)
-        embed.add_field(name="Activity Breakdown",value="Online: " + str((combinedActivity[0]/totalActivity)*100) + "%;"
-                                                        " Idle: " + str((combinedActivity[1]/totalActivity)*100) + "%;"
-                                                        " DND: " + str((combinedActivity[2]/totalActivity)*100) + "%; "
-                                                        "Invisible: " + str((combinedActivity[3]/totalActivity)*100)
+        embed.add_field(name="Activity Breakdown",value="Online: " + str(round((combinedActivity[0]/totalActivity)*100)) + "%;"
+                                                        " Idle: " + str(round((combinedActivity[1]/totalActivity)*100)) + "%;"
+                                                        " DND: " + str(round((combinedActivity[2]/totalActivity)*100)) + "%; "
+                                                        "Invisible: " + str(round(combinedActivity[3]/totalActivity)*100))
                                                         + "%", inline=False)
         roles = list(user.roles)
         roleString = str(roles[1].mention)
@@ -470,5 +470,5 @@ class ModerationModule(commands.Cog):
             roleString = str(role.mention) + ", " + roleString
         embed.add_field(name="Roles",value=roleString,inline=False)
         embed.set_thumbnail(url=user.avatar_url)
-        embed.set_footer(text="UserID: " + str(user.id) + " • APPL: " + str(self.utility.getAPLevel(guild,user.id)) + " • Is Client? " + str(user.bot))
+        embed.set_footer(text="UserID: " + str(user.id) + " • APPL: " + str(self.utility.getAPLevel(guild,user.id)) + " • Is Bot? " + str(user.bot))
         await context.send(embed=embed)
