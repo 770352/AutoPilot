@@ -456,7 +456,7 @@ class ModerationModule(commands.Cog):
                     embed.insert_field_at(index=5,name="Playing", value=str(activity.name),inline=True)
 
         combinedActivity, combinedDevice = await self.ranks.calculateBreakdowns(user.id)
-        totalActivity = sum(combinedActivity) if sum(combinedActivity) >= 0 else 1
+        totalActivity = 1 if sum(combinedActivity) == 0 else sum(combinedActivity)
         print(combinedActivity)
         totalDevice = sum(combinedDevice)
         embed.add_field(name="Activity Breakdown",value="Online: " + str(round((combinedActivity[0]/totalActivity)*100)) + "%;"
