@@ -462,7 +462,7 @@ class ModerationModule(commands.Cog):
         embed.add_field(name="Activity Breakdown",value="Online: " + str(round((combinedActivity[0]/totalActivity)*100)) + "%;"
                                                         " Idle: " + str(round((combinedActivity[1]/totalActivity)*100)) + "%;"
                                                         " DND: " + str(round((combinedActivity[2]/totalActivity)*100)) + "%; "
-                                                        "Invisible: " + str(round(combinedActivity[3]/totalActivity)*100))
+                                                        "Invisible: " + str(round((combinedActivity[3]/totalActivity)*100))
                                                         + "%", inline=False)
         roles = list(user.roles)
         roleString = str(roles[1].mention)
