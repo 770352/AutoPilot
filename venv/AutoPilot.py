@@ -311,7 +311,7 @@ async def on_command_error(context, exception):
     global stacktracebuffer
     guild = context.message.guild
     if isinstance(exception, commands.CommandNotFound):
-        await context.send("Command \"" + str(context.invoked_with) + "\" Not Found")
+        #await context.send("Command \"" + str(context.invoked_with) + "\" Not Found")
         return
     stacktracebuffer = \
         [exception, ''.join(traceback.format_exception(type(exception), exception, exception.__traceback__))]

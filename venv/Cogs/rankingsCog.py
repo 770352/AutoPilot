@@ -34,8 +34,12 @@ class ActivityModule(commands.Cog):
         stats = AutoPilot.ServerSettings[str(guildID)]['ActivityTable'][str(userID)]
         return stats
 
-    def loadActivityBreakdown(self, userID):
-        pass
+    def loadActivityBreakdown(self, userID,guildID):
+        try:
+            pass
+        except KeyError:
+            breakdown = [0, 0, 0, 0]
+
 
     def saveStats(self, guildID, userID, serverStats, userStats):
         AutoPilot.ServerSettings[str(guildID)]['ServerActivity'] = serverStats
