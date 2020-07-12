@@ -34,11 +34,35 @@ class ActivityModule(commands.Cog):
         stats = AutoPilot.ServerSettings[str(guildID)]['ActivityTable'][str(userID)]
         return stats
 
-    def loadActivityBreakdown(self, userID,guildID):
+    def loadActivityBreakdown(self, userID, guildID):
         try:
-            pass
+            activity = AutoPilot.ServerSettings[str(guildID)]['ActivityTable'][str(userID)]["breakdowns"]["activity"]
+            device = AutoPilot.ServerSettings[str(guildID)]['ActivityTable'][str(userID)]["breakdowns"]["device"]
         except KeyError:
-            breakdown = [0, 0, 0, 0]
+            AutoPilot.ServerSettings[str(guildID)]['ActivityTable'][str(userID)].update({"breakdowns": {"activity": [
+                0, 0, 0, 0
+            ], "device": [0, 0, 0, 0]}})
+            activity = AutoPilot.ServerSettings[str(guildID)]['ActivityTable'][str(userID)]["breakdowns"]["activity"]
+            device = AutoPilot.ServerSettings[str(guildID)]['ActivityTable'][str(userID)]["breakdowns"]["device"]
+        return activity, device
+
+    async def calculateBreakdowns(self, userID):
+        guilds = await self.client.fetch_guilds(limit=150).flatten()
+        totalActivity = [0, 0, 0, 0]
+        totalDevice = [0, 0, 0, 0]
+        for guild in guilds:
+            guild = self.client.get_guild(int(guild.id))
+            if guild.get_member(userID):
+                try:
+                    activity, device = self.loadActivityBreakdown(userID, guild.id)
+                except KeyError:
+                    activity = [0, 0, 0, 0]
+                    device = [0, 0, 0, 0]
+                totalActivity = [x + y for x, y in zip(totalActivity, activity)]
+                totalDevice = [x + y for x, y in zip(totalDevice, device)]
+
+        return totalActivity, totalDevice
+
 
 
     def saveStats(self, guildID, userID, serverStats, userStats):
@@ -57,8 +81,6 @@ class ActivityModule(commands.Cog):
             if avgActivity > 1:
                 print("Invalid AvgActivity")
                 avgActivity = 0
-
-            print(str(userStats["RecentStats"]["activity"]) + ":" + str(avgActivity))
             userStats['PreviousStats']["avgActivity"] = avgActivity
             userStats['RecentStats']['activity'] = 0
 
@@ -90,11 +112,39 @@ class ActivityModule(commands.Cog):
         userStats["RecentStats"]["activity"] = activity
         self.saveStats(message.guild.id, message.author.id, serverStats, userStats)
 
+    def determineDevice(self, author):
+        if author.desktop_status:
+            return 0
+        elif author.mobile_status or author.is_on_mobile():
+            return 1
+        elif author.website_status:
+            return 2
+        else:
+            return 3
+
+    def determineStatus(self, author):
+        status = author.status
+        if str(status) == "online":
+            return 0
+        elif str(status) == "idle":
+            return 1
+        elif str(status) == "dnd":
+            return 2
+        elif str(status) == "offline":
+            return 3
+        else:
+            return 4
 
     def updateStatusBreakdown(self, message):
         author = message.author
-        status = author.status
+        guild = message.guild
+        status = self.determineStatus(author)
+        device = self.determineDevice(author)
+        activityBreakdown, deviceBreakdown = self.loadActivityBreakdown(author.id, guild.id)
+        activityBreakdown[status] += 1
+        deviceBreakdown[device] += 1
 
+        print(str(activityBreakdown) + " : " + str(deviceBreakdown))
 
     # Message Handler
     @commands.Cog.listener()
@@ -135,9 +185,22 @@ class ActivityModule(commands.Cog):
         embed.set_footer(text="Next Reset Window: " + str(time.ctime(stats['NextReset'])))
         await context.send(embed=embed)
 
+    @commands.command(brief="Returns user activity breakdown")
+    async def breakdown(self, context):
+        if not context.message.mentions:
+            try:
+                userID = str(context.message.content).split(" ", 1)[1]
+                user = context.message.guild.get_member(int(userID))
+                if not user:
+                    await context.send("Invalid User ID")
+                    return
+            except IndexError:
+                user = context.message.author
+        else:
+            user = context.message.mentions[0]
+
     @commands.command()
     async def rank(self, context):
-
         if not context.message.mentions:
             try:
                 userID = str(context.message.content).split(" ", 1)[1]
@@ -153,7 +216,7 @@ class ActivityModule(commands.Cog):
         stats = self.loadUserStats(context.message.guild.id, user.id)
         resetTime = stats["PreviousStats"]["NextReset"]
         embed = discord.Embed(title="Activity Stats For: " + str(user.nick))
-        embed.add_field(name="Total Activity",
+        embed.add_field(name="Average Activity",
                         value=str(round(stats["PreviousStats"]["avgActivity"] * 10000) / 100) + "%")
         embed.add_field(name="Total Messages", value=str(stats["PreviousStats"]["totalMessages"]))
         embed.add_field(name="Total Spam", value=str(stats["PreviousStats"]["totalSpam"]))

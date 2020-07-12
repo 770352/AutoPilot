@@ -2,7 +2,7 @@ from discord.ext import commands
 import discord
 import asyncio
 import AutoPilot
-from Cogs import actionLogCog
+from Cogs import actionLogCog, rankingsCog
 import time, shutil, requests
 
 def setup(client):
@@ -316,6 +316,7 @@ class ModerationModule(commands.Cog):
         self.client = bot
         self.utility = ModUtilityModule(self.client)
         self.log = actionLogCog.ActionLogModule(self.client)
+        self.ranks = rankingsCog.ActivityModule(self.client)
 
     @commands.command(name="purge",description="Bulk Deletes Messages From a Channel \n[userID|amount]")
     async def bulkdelete(self,context):
@@ -453,13 +454,15 @@ class ModerationModule(commands.Cog):
                     embed.insert_field_at(index=5,name="Status", value=str(activity.name), inline=True)
                 except:
                     embed.insert_field_at(index=5,name="Playing", value=str(activity.name),inline=True)
-        try:
-            rapsheet = self.utility.getUserInfractions(guildID, user.id)
-            embed.add_field(name="Infractions", value="Warnings: " + str(rapsheet["Warnings"])
-                                                  + "; Mutes: " + str(rapsheet["Mutes"]) +
-                                                  "; Kicks: " + str(rapsheet["Kicks"]),inline=False)
-        except:
-            pass
+
+        combinedActivity, combinedDevice = await self.ranks.calculateBreakdowns(user.id)
+        totalActivity = sum(combinedActivity)
+        print(combinedActivity)
+        totalDevice = sum(combinedDevice)
+        embed.add_field(name="Activity Breakdown",value="Online: " + str((combinedActivity[0]/totalActivity)*100) + "%;"
+                                                        " Idle: " + str((combinedActivity[1]/totalActivity)*100) + "%;"
+                                                        " DND: " + str((combinedActivity[2]/totalActivity)*100) + "%; "
+                                                        "Invlisible: " + str((combinedActivity[3]/totalActivity)*100) + "%")
         roles = list(user.roles)
         roleString = str(roles[1].mention)
         for role in roles[2:]:
