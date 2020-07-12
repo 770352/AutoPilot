@@ -8,7 +8,7 @@ import systemUtilitys
 import psutil
 import _thread as threads
 
-version = "0.4.6"
+version = "0.4.7"
 trusted = ['435450974778294273']
 cogs = {}
 ServerSettings = {}
@@ -74,7 +74,7 @@ class ManagmentModule(commands.Cog):
             time1 = time.time()
             ping = ((time1 - time0) * 1000) / 2
         heartbeat = round(client.latency * 1000)
-        return (ping, heartbeat, messageDelay)
+        return ping, heartbeat, messageDelay
 
     async def traffic(self, mode):
         old_value = 0
@@ -298,7 +298,7 @@ async def on_ready():
     for guild in guilds:
         try:
             id = ServerSettings[str(guild.id)]
-        except KeyError as e:
+        except KeyError:
             ServerSettings.update({str(guild.id): {"ServerSettings": {}}})
     threads.start_new(autoSave, (0, 0))
     displayed = discord.CustomActivity(name="Being Developed")
