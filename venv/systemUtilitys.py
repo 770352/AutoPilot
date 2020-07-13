@@ -89,7 +89,9 @@ def updateClient():
     print("Result: " + str(cmdResult))
     if cmdResult.startswith('Already up to date.'):
         return 0
-    else:
+    elif cmdResult.startswith("Updating"):
         return 1
+    else:
+        return -1
 
 

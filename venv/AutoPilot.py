@@ -129,7 +129,7 @@ class ManagmentModule(commands.Cog):
             await client.logout()
             exit(2)
         else:
-            await message.edit(content="Something Went Wrong")
+            await message.edit(content="Something Went Wrong, Aborting")
 
     @commands.command(aliases=['restart'], brief='Disconnects AutoPilot; Host only')
     @commands.is_owner()
