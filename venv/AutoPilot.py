@@ -306,6 +306,7 @@ async def on_ready():
     await client.change_presence(status=discord.Status.online, activity=displayed)
     await client.loop.create_task(live_stats(726106253809418261))
 
+
 @client.event
 async def on_message(message):
     if message.author.id in banned:
