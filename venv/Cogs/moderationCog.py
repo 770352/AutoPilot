@@ -357,8 +357,8 @@ class ModerationModule(commands.Cog):
         ignorePerms = False
         if not context.message.mentions:
             try:
-                userID = str(context.message.content).split(" ",2)[1]
-                time = str(context.message.content).split(" ",2)[2]
+                userID = str(context.message.content).split(" ")[1]
+                time = str(context.message.content).split(" ")[2]
                 user = context.message.guild.get_member(int(userID))
                 if not user:
                     await context.send("Invalid User ID")
@@ -366,12 +366,12 @@ class ModerationModule(commands.Cog):
             except IndexError:
                 print("Selfmute")
                 user = context.message.author
-                time = str(context.message.content).split(" ", 1)[1]
+                time = str(context.message.content).split(" ")[1]
                 ignorePerms = True
         else:
             try:
                 user = context.message.mentions[0]
-                time = str(context.message.content).split(" ", 2)[2]
+                time = str(context.message.content).split(" ")[2]
             except IndexError:
                 await context.send("Please add the time the user will be muted for, and the reason for the mute")
                 return
@@ -391,8 +391,8 @@ class ModerationModule(commands.Cog):
             return
         if not context.message.mentions:
             try:
-                userID = str(context.message.content).split(" ", 2)[1]
-                time = str(context.message.content).split(" ", 2)[2]
+                userID = str(context.message.content).split(" ")[1]
+                time = str(context.message.content).split(" ")[2]
                 user = context.message.guild.get_member(int(userID))
                 if not user:
                     await context.send("Invalid User ID")
@@ -402,7 +402,7 @@ class ModerationModule(commands.Cog):
         else:
             try:
                 user = context.message.mentions[0]
-                time = str(context.message.content).split(" ", 2)[2]
+                time = str(context.message.content).split(" ")[2]
             except IndexError:
                 await context.send("Please add the time the user will be banned for, and the reason for the ban")
                 return

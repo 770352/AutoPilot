@@ -210,14 +210,15 @@ class ActivityModule(commands.Cog):
                 user = context.message.author
         else:
             user = context.message.mentions[0]
-
+        guildStats = self.loadGuildStats(context.message.guild.id)
         stats = self.loadUserStats(context.message.guild.id, user.id)
         resetTime = stats["PreviousStats"]["NextReset"]
         embed = discord.Embed(title="Activity Stats For: " + str(user.nick))
         embed.add_field(name="Average Activity",
                         value=str(round(stats["PreviousStats"]["avgActivity"] * 10000) / 100) + "%")
         embed.add_field(name="Total Messages", value=str(stats["PreviousStats"]["totalMessages"]))
-        embed.add_field(name="Total Spam", value=str(stats["PreviousStats"]["totalSpam"]))
+        embed.add_field(name="Total Activity", value=str(round((stats["PreviousStats"]["totalMessages"]
+                                                               /guildStats['TotalMessages'])*100)) + "%")
         embed.add_field(name="Recent Activity", value=str(round(stats["RecentStats"]["activity"] * 10000) / 100) + "%")
         embed.add_field(name="Recent Messages", value=str(stats["RecentStats"]["messages"]))
         embed.add_field(name="Recent Spam", value=str(stats["RecentStats"]["recentSpam"]))
