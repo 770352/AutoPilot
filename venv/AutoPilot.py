@@ -10,6 +10,7 @@ import _thread as threads
 
 version = "0.4.7"
 trusted = ['435450974778294273']
+banned = []
 cogs = {}
 ServerSettings = {}
 Running = True
@@ -305,6 +306,13 @@ async def on_ready():
     await client.change_presence(status=discord.Status.online, activity=displayed)
     await client.loop.create_task(live_stats(726106253809418261))
 
+@client.event
+async def on_message(message):
+    if message.author.id in banned:
+        channel = message.channel
+        await channel.send("You have been blacklist from using this client")
+    await client.process_commands(message)
+    pass
 
 @client.event
 async def on_command_error(context, exception):
