@@ -10,7 +10,7 @@ import _thread as threads
 
 version = "0.4.7"
 trusted = ['435450974778294273']
-banned = []
+banned = ['158332595904577536']
 cogs = {}
 ServerSettings = {}
 Running = True
