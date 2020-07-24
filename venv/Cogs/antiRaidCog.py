@@ -13,7 +13,7 @@ class AntiRaidModule(commands.Cog):
         self.client = bot
         self.modUtility = moderationCog.ModUtilityModule(self.client)
 
-    @commands.Command
+    @commands.command()
     async def purgeInvites(self, context):
         guild = context.message.guild
         if not self.modUtility.getAPLevel(guild, context.message.author.id) >= 1:
@@ -30,3 +30,7 @@ class AntiRaidModule(commands.Cog):
                 await context.send("Unable to delete invite: " + str(invite.code))
 
         await context.send("Action Completed")
+
+    @commands.command(brief="Kicks new joins, Dm's them with reason, and 1 time invite")
+    async def lockdown(self):
+        raise NotImplementedError

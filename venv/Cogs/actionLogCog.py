@@ -362,8 +362,8 @@ class ActionLogModule(commands.Cog):
             embed = discord.Embed(title=str(Member),
                                   description="User Joined: " + str(Member.mention),
                                   color=0x00FF00)
-            if not newMember:
-                embed.description = "User Rejoined: " + str(Member.mention)
+            # if not newMember:
+            #     embed.description = "User Rejoined: " + str(Member.mention)
             embed.set_thumbnail(url=Member.avatar_url)
             embed.add_field(name="Account Created",value=str(Member.created_at).split(".",1)[0],inline=False)
             embed.add_field(name="Role's Restored",value=str(restored) + "/" + str(total-1))

@@ -105,7 +105,8 @@ class MusicModule(commands.Cog):
             pass
 
     @commands.command()
-    async def search(self,context):
+    async def search(self, context):
+        raise DeprecationWarning
         print("Running Muisc Search")
         channel = context.channel
         async with channel.typing():

@@ -47,8 +47,6 @@ class FunStuffModule(commands.Cog):
         except:
             await context.send("Vote must contain a vote")
             return
-
-
         embed = discord.Embed(title="",description=str(member.mention) + "'s Query",
                               timestamp=context.message.created_at)
         embed.set_author(name=str(member),icon_url=member.avatar_url)

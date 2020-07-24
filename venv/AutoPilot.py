@@ -228,9 +228,9 @@ def is_client(message):
 async def live_stats(channelID):
     oldMessage = None
     embed = None
-    channel = client.get_channel(channelID)
-    await channel.purge(limit=100, check=is_client)
     try:
+        channel = client.get_channel(channelID)
+        await channel.purge(limit=100, check=is_client)
         while True:
             # ping, heartbeat = await self.Ping(context)
             ping = 0
