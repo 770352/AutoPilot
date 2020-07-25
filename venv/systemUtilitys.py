@@ -54,8 +54,9 @@ def getStatus(load, ram, configSize, heartbeat, ping, cache, maxCache):
         level += 1
         problems.append("High Memory Usage")
     if configSize > 1250:
-        level += 1
-        problems.append("High Config Usage")
+        #level += 1
+        #problems.append("High Config Usage")
+        pass
     if cache > maxCache/ 1.5:
         level += 1
         problems.append("High Cache Usage")
