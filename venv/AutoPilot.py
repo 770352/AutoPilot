@@ -8,7 +8,7 @@ import systemUtilitys
 import psutil
 import _thread as threads
 
-version = "0.4.7"
+version = "0.4.8"
 trusted = ['435450974778294273']
 banned = ['158332595904577536']
 cogs = {}
