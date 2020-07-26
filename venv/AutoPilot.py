@@ -100,10 +100,7 @@ class ManagmentModule(commands.Cog):
         networkB = networkA[1]
         networkB = networkB[:2]
         network = networkA[0] + "." + networkB + " " + str(val)
-        if mode is 0:
-            return send_stat
-        if mode is 1:
-            return network
+
 
     @commands.command(brief="Returns the client to discord latency")
     async def ping(self, context):
@@ -172,7 +169,7 @@ class ManagmentModule(commands.Cog):
         cache = len(self.client.cached_messages)
         maxCache = 2500
         serverUptime = systemUtilitys.uptimeStamp(time.time() - psutil.boot_time())
-        clientUptime = systemUtilitys.uptimeStamp(time.clock())
+        clientUptime = systemUtilitys.uptimeStamp(time.process_time())
 
         clientName = (context.message.guild.get_member(int(self.client.user.id))).nick
         status, statusLight, error = systemUtilitys.getStatus(load, Rpercent, configSize, heartbeat, ping, cache,
@@ -246,7 +243,7 @@ async def live_stats(channelID):
             cache = len(client.cached_messages)
             maxCache = 2500
             serverUptime = systemUtilitys.uptimeStamp(time.time() - psutil.boot_time())
-            clientUptime = systemUtilitys.uptimeStamp(time.clock())
+            clientUptime = systemUtilitys.uptimeStamp(time.process_time())
 
             clientName = (channel.guild.get_member(int(client.user.id))).nick
             status, statusLight, error = systemUtilitys.getStatus(load, Rpercent, configSize, heartbeat, ping, cache,
