@@ -311,7 +311,7 @@ async def on_ready():
 async def on_message(message):
     if str(message.author.id) in banned:
         channel = message.channel
-        await channel.send("You have been blacklist from using this client")
+        #await channel.send("You have been blacklist from using this client")
         return
     await client.process_commands(message)
     pass
