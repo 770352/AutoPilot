@@ -162,7 +162,8 @@ class MusicPlayer(commands.Cog, name='Music'):
             # NOTE: needs to be embeded to make it better output
             return await msg.send(f"Added playlist {data['title']} to queue")
         self.player[msg.guild.id]['queue'].append({'title': title, 'author': msg})
-        return await msg.send(f"**{title} added to queue**".title())
+        embed = discord.Embed(title="Song Added to queue", description=f"**{title}**".title())
+        return await msg.send(embed=embed)
 
     async def voice_check(self, msg):
         """
@@ -331,10 +332,12 @@ class MusicPlayer(commands.Cog, name='Music'):
             if msg.voice_client.is_playing() is True:
                 if self.player[msg.guild.id]['repeat'] is True:
                     self.player[msg.guild.id]['repeat'] = False
-                    return await msg.message.add_reaction(emoji='✅')
+                    # return await msg.message.add_reaction(emoji='✅')
+                    return
 
                 self.player[msg.guild.id]['repeat'] = True
-                return await msg.message.add_reaction(emoji='✅')
+                # return await msg.message.add_reaction(emoji='✅')
+                return
 
             return await msg.send("No audio currently playing")
         return await msg.send("Bot not in voice channel or playing music")
@@ -399,7 +402,8 @@ class MusicPlayer(commands.Cog, name='Music'):
                 self.player[msg.guild.id]['queue'].clear()
                 self.player[msg.guild.id]['repeat'] = False
                 msg.voice_client.stop()
-                return await msg.message.add_reaction(emoji='✅')
+                # return await msg.message.add_reaction(emoji='✅')
+                return
 
             return await msg.send(
                 f"**{msg.author.display_name}, there is no audio currently playing or songs in queue**")
@@ -437,7 +441,8 @@ class MusicPlayer(commands.Cog, name='Music'):
 
             if msg.voice_client.is_paused() is False:
                 msg.voice_client.pause()
-                await msg.message.add_reaction(emoji='✅')
+                # await msg.message.add_reaction(emoji='✅')
+
 
     @commands.has_permissions(manage_channels=True)
     @command()
@@ -453,7 +458,8 @@ class MusicPlayer(commands.Cog, name='Music'):
 
             if msg.voice_client.is_paused() is True:
                 msg.voice_client.resume()
-                return await msg.message.add_reaction(emoji='✅')
+                return
+                # return await msg.message.add_reaction(emoji='✅')
 
     @command(name='queue', aliases=['song-list', 'q', 'current-songs'])
     async def _queue(self, msg):
