@@ -287,9 +287,13 @@ cogs["SystemUtilitys"] = {"Running": "No Problems"}
 time.sleep(1)
 client.remove_command('help')
 for ext in os.listdir(CogLocations):
-    if not ext.startswith(('_', '.')):
+    if not ext.startswith(('_', '.', '-')):
         print("Loading Extenstion: " + str(ext[:-3]))
-        client.load_extension('Cogs.' + ext[:-3])
+        try:
+            client.load_extension('Cogs.' + ext[:-3])
+        except Exception as e:
+            print("Failed to load Extension: " + str(ext[:-3] + "; Reason: " + str(e)))
+
 
 
 @client.event
@@ -310,8 +314,6 @@ async def on_ready():
 @client.event
 async def on_message(message):
     if str(message.author.id) in banned:
-        channel = message.channel
-        #await channel.send("You have been blacklist from using this client")
         return
     await client.process_commands(message)
     pass
@@ -321,7 +323,6 @@ async def on_command_error(context, exception):
     global stacktracebuffer
     guild = context.message.guild
     if isinstance(exception, commands.CommandNotFound):
-        #await context.send("Command \"" + str(context.invoked_with) + "\" Not Found")
         return
     stacktracebuffer = \
         [exception, ''.join(traceback.format_exception(type(exception), exception, exception.__traceback__))]
