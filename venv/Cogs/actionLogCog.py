@@ -409,7 +409,8 @@ class ActionLogModule(commands.Cog):
             channel = self.client.get_channel(int(welcomeID))
             message = await self.utilitys.generateWelcomeLeave(Member.guild, Member)
             if message:
-                await channel.send(message)
+                embed = discord.Embed(title="Member Left", description=message)
+                await channel.send(embed=embed)
 
     @commands.Cog.listener()
     async def on_guild_join(self, Guild):
