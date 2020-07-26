@@ -1,7 +1,9 @@
 import discord, asyncio, random, youtube_dl, string, os
 from discord.ext import commands
 from discord.ext.commands import command
-
+import AutoPilot
+import math
+from Cogs import moderationCog
 # NOTE: Import pymongo if you are using the database function commands
 # NOTE: Also add `pymongo` and `dnspython` inside the requirements.txt file if you are using pymongo
 # import pymongo
@@ -96,6 +98,7 @@ class Downloader(discord.PCMVolumeTransformer):
 class MusicPlayer(commands.Cog, name='Music'):
     def __init__(self, client):
         self.bot = client
+        self.modUtility = moderationCog.ModUtilityModule(self.bot)
         # self.database = pymongo.MongoClient(os.getenv('MONGO'))['Discord-Bot-Database']['General']
         # self.music=self.database.find_one('music')
         self.player = {
@@ -108,9 +111,9 @@ class MusicPlayer(commands.Cog, name='Music'):
 
     async def removeFromAFK(self):
         await asyncio.sleep(1)
-        guilds = await self.client.fetch_guilds(limit=150).flatten()
+        guilds = await self.bot.fetch_guilds(limit=150).flatten()
         for guild in guilds:
-            guild = self.client.get_guild(int(guild.id))
+            guild = self.bot.get_guild(int(guild.id))
             afkChannel = guild.afk_channel
             if afkChannel:
                 for member in afkChannel.members:
@@ -272,7 +275,7 @@ class MusicPlayer(commands.Cog, name='Music'):
         #     msg.voice_client.source.volume=self.music[str(msg.guild.id)]['vol']/100
         return msg.voice_client
 
-    @command()
+    @commands.command()
     async def play(self, msg, *, song):
         """
         Play a song with given url or title from Youtube
@@ -338,8 +341,8 @@ class MusicPlayer(commands.Cog, name='Music'):
                 # NOTE: user must join same voice channel if queue exist
                 return await msg.send("Please join the same voice channel as the bot to add song to queue")
 
-    @commands.has_permissions(manage_channels=True)
-    @command()
+
+    @commands.command()
     async def repeat(self, msg):
         """
         Repeat the currently playing or turn off by using the command again
@@ -360,8 +363,7 @@ class MusicPlayer(commands.Cog, name='Music'):
             return await msg.send("No audio currently playing")
         return await msg.send("Bot not in voice channel or playing music")
 
-    @commands.has_permissions(manage_channels=True)
-    @command(aliases=['restart-loop'])
+    @commands.command(aliases=['restart-loop'])
     async def reset(self, msg):
         """
         Restart the currently playing song  from the begining
@@ -380,7 +382,7 @@ class MusicPlayer(commands.Cog, name='Music'):
         self.player[msg.guild.id]['reset'] = True
         msg.voice_client.stop()
 
-    @command()
+    @commands.command()
     async def skip(self, msg):
         """
         Skip the current playing song
@@ -393,6 +395,29 @@ class MusicPlayer(commands.Cog, name='Music'):
         if msg.author.voice is None or msg.author.voice.channel != msg.voice_client.channel:
             return await msg.send("Please join the same voice channel as the bot")
 
+        def check(reaction, user):
+            return user in msg.author.voice.channel.members and reaction.emoji in "✅" and user is not msg.author
+
+        if self.modUtility.getAPLevel(msg.guild, msg.author.id) >= 1:
+            await self._skip(msg)
+            return
+        else:
+            await msg.message.clear_reactions()
+            await msg.message.add_reaction("✅")
+            waiting = True
+            voted = 0
+            required = math.floor(len(msg.author.voice.channel.members) * 0.5) + 1
+            while waiting and voted < required:
+                try:
+                    react, user = await self.bot.wait_for('reaction_add', timeout=20, check=check)
+                    voted += 1
+                except asyncio.TimeoutError:
+                    await msg.send("Not enough members voted")
+                    return
+            await self._skip(msg)
+
+
+    async def _skip(self, msg):
         if self.player[msg.guild.id]['queue'] and msg.voice_client.is_playing() is False:
             return await msg.send("**No songs in queue to skip**".title(), delete_after=60)
 
@@ -400,7 +425,7 @@ class MusicPlayer(commands.Cog, name='Music'):
         msg.voice_client.stop()
         return await msg.message.add_reaction(emoji='✅')
 
-    @command()
+    @commands.command()
     async def stop(self, msg):
         """
         Stop the current playing songs and clear the queue
@@ -425,7 +450,7 @@ class MusicPlayer(commands.Cog, name='Music'):
                 f"**{msg.author.display_name}, there is no audio currently playing or songs in queue**")
 
 
-    @command(aliases=['get-out', 'disconnect', 'leave-voice'])
+    @commands.command(aliases=['get-out', 'disconnect', 'leave-voice'])
     async def leave(self, msg):
         """
         Disconnect the bot from the voice channel
@@ -444,7 +469,7 @@ class MusicPlayer(commands.Cog, name='Music'):
             return await msg.send("You must be in the same voice channel as bot to disconnect it via command")
 
 
-    @command()
+    @commands.command()
     async def pause(self, msg):
         """
         Pause the currently playing audio
@@ -460,7 +485,7 @@ class MusicPlayer(commands.Cog, name='Music'):
                 # await msg.message.add_reaction(emoji='✅')
 
 
-    @command()
+    @commands.command()
     async def resume(self, msg):
         """
         Resume the currently paused audio
