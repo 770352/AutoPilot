@@ -270,7 +270,7 @@ class MusicPlayer(commands.Cog, name='Music'):
         self.player[msg.guild.id]['player'] = download
         self.player[msg.guild.id]['author'] = msg
         msg.voice_client.play(download, after=lambda a: loop.create_task(self.done(msg, msgId.id)))
-
+        msg.voice_client.source.volume = 0.05
         # if str(msg.guild.id) in self.music: #NOTE adds user's default volume if in database
         #     msg.voice_client.source.volume=self.music[str(msg.guild.id)]['vol']/100
         return msg.voice_client
