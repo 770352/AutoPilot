@@ -10,7 +10,7 @@ import _thread as threads
 
 version = "0.4.8"
 trusted = ['435450974778294273']
-banned = ['158332595904577536','435450974778294273']
+banned = ['158332595904577536']
 cogs = {}
 ServerSettings = {}
 Running = True
@@ -309,8 +309,6 @@ async def on_ready():
 
 @client.event
 async def on_message(message):
-    print("on message")
-    print(str(message.author.id))
     if str(message.author.id) in banned:
         channel = message.channel
         await channel.send("You have been blacklist from using this client")
