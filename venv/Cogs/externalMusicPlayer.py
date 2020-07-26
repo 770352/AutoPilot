@@ -102,6 +102,20 @@ class MusicPlayer(commands.Cog, name='Music'):
             "audio_files": []
         }
 
+    @commands.Cog.listener()
+    async def on_voice_state_update(self, member, before, after):
+        await self.removeFromAFK()
+
+    async def removeFromAFK(self):
+        await asyncio.sleep(1)
+        guilds = await self.client.fetch_guilds(limit=150).flatten()
+        for guild in guilds:
+            guild = self.client.get_guild(int(guild.id))
+            afkChannel = guild.afk_channel
+            if afkChannel:
+                for member in afkChannel.members:
+                    await member.edit(voice_channel=None)
+
     @property
     def random_color(self):
         return discord.Color.from_rgb(random.randint(1, 255), random.randint(1, 255), random.randint(1, 255))
@@ -265,6 +279,10 @@ class MusicPlayer(commands.Cog, name='Music'):
         `Ex:` s.play Titanium David Guetta
         `Command:` play(song_name)
         """
+        channel = msg.channel
+        async with channel.typing():
+            pass
+
         if msg.guild.id in self.player:
             if msg.voice_client.is_playing() is True:  # NOTE: SONG CURRENTLY PLAYING
                 return await self.queue(msg, song)
