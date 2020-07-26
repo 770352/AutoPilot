@@ -376,7 +376,8 @@ class ActionLogModule(commands.Cog):
             channel = self.client.get_channel(int(welcomeID))
             message = await self.utilitys.generateWelcomeJoin(Member.guild, Member)
             if message:
-                await channel.send(message)
+                embed = discord.Embed(title="Member joined", description=message)
+                await channel.send(embed=embed)
 
 
     @commands.Cog.listener()
