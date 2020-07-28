@@ -41,18 +41,17 @@ class FunStuffModule(commands.Cog):
 
     @commands.command(brief="Creates a vote")
     async def vote(self, context):
-
+        member = context.author
         try:
             vote = str(context.message.content).split(" ", 1)[1]
         except:
             await context.send("Vote must contain a vote")
             return
-        embed = discord.Embed(title="",description=str(member.mention) + "'s Query",
+        embed = discord.Embed(title="", description=str(member.mention) + "'s Query",
                               timestamp=context.message.created_at)
-        embed.set_author(name=str(member),icon_url=member.avatar_url)
-        embed.add_field(name="Query",value=str(suggestion),inline=False)
+        embed.set_author(name=str(member), icon_url=member.avatar_url)
+        embed.add_field(name="Query", value=str(vote), inline=False)
         embed.set_footer(text="userID: " + str(member.id))
-        channel = self.client.get_channel(int(channelID))
         message = await context.send(embed=embed)
         await message.add_reaction('✅')
         await message.add_reaction('❓')
