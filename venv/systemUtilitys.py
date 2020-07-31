@@ -49,13 +49,16 @@ def getStatus(load, ram, configSize, heartbeat, ping, cache, maxCache):
 
     if currentMode == "Rebooting":
         level += 2
-        problems.append("AutoPilot Is Rebooting")
+        problems.append("AutoPilot Is Rebooting...")
+    if currentMode == "ShuttingDown":
+        level += 2
+        problems.append("AutoPilot Has ShutDown")
     if currentMode == "Updating":
         level += 1
-        problems.append("AutoPilot Is Updating")
+        problems.append("AutoPilot Is Updating...")
     if currentMode == "Restarting":
         level += 1
-        problems.append("AutoPilot Is Restarting")
+        problems.append("AutoPilot Is Restarting...")
 
     if load > 80:
         level += 1

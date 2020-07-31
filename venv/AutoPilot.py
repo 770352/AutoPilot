@@ -139,8 +139,8 @@ class ManagmentModule(commands.Cog):
     async def closeDown(self, context):
         systemUtilitys.currentMode = "Restarting"
         save()
-        await context.send("AutoPilot Logging Off")
         await asyncio.sleep(5)
+        await context.send("AutoPilot Logging Off")
         await client.logout()
         exit(0)
 
