@@ -1,6 +1,7 @@
 import psutil, os
 import distutils.dir_util as dirutils
 currentMode = None
+clientName = None
 greenSquare = "https://media.discordapp.net/attachments/515326457652707338/723982716219162725/450.png"
 yellowSquare = "https://media.discordapp.net/attachments/515326457652707338/723986430421893160/adidas-adi" \
                "color-yellow-orange-square-shape-s-png-clip-art.png?width=668&height=587"

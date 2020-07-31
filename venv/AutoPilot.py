@@ -157,8 +157,8 @@ class ManagmentModule(commands.Cog):
         systemUtilitys.currentMode = "Rebooting"
         await context.send("Rebooting")
         save()
-        await client.logout()
         await asyncio.sleep(5)
+        await client.logout()
         os.system('shutdown /r /f')
         exit(0)
 
@@ -316,6 +316,7 @@ async def on_ready():
     displayed = discord.CustomActivity(name="Being Developed")
     await client.change_presence(status=discord.Status.online, activity=displayed)
     systemUtilitys.currentMode = "Running"
+    systemUtilitys.clientName = str(client.user)
     await client.loop.create_task(live_stats(726106253809418261))
 
 
