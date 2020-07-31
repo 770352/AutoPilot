@@ -127,8 +127,8 @@ class ManagmentModule(commands.Cog):
             systemUtilitys.currentMode = "Running"
         elif res == 1:
             await message.edit(content="Client Updated, Restarting")
-            await client.logout()
             await asyncio.sleep(5)
+            await client.logout()
             exit(2)
         else:
             await message.edit(content="Something Went Wrong, Aborting")
@@ -140,8 +140,8 @@ class ManagmentModule(commands.Cog):
         systemUtilitys.currentMode = "Restarting"
         save()
         await context.send("AutoPilot Logging Off")
-        await client.logout()
         await asyncio.sleep(5)
+        await client.logout()
         exit(0)
 
     @commands.command(brief="Hard stops the client; Host only")
