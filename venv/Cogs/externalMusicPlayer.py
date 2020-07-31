@@ -40,7 +40,7 @@ stim = {
     "nooverwrites": True,
     "keepvideo": False,
     "noplaylist": True,
-    "skip_download": False,
+    "skip_download": True,
     'source_address': '0.0.0.0'  # bind to ipv4 since ipv6 addresses cause issues sometimes
 }
 
@@ -256,6 +256,7 @@ class MusicPlayer(commands.Cog, name='Music'):
         new_opts['outtmpl'] = new_opts['outtmpl'].format(audio_name)
 
         ytdl = youtube_dl.YoutubeDL(new_opts)
+
         download1 = await Downloader.video_url(song, ytdl=ytdl, loop=self.bot.loop)
 
         download = download1[0]
@@ -302,7 +303,10 @@ class MusicPlayer(commands.Cog, name='Music'):
                 return await self.queue(context, song)
 
             if context.voice_client.is_playing() is False and not self.player[context.guild.id]['queue']:
-                return await self.start_song(context, song)
+                try:
+                    return await self.start_song(context, song)
+                except ValueError:
+                    await context.send("AutoPilot was unable to find that song")
 
 
         else:
@@ -315,7 +319,10 @@ class MusicPlayer(commands.Cog, name='Music'):
                 "reset": False,
                 'repeat': False
             }
-            return await self.start_song(context, song)
+            try:
+                return await self.start_song(context, song)
+            except ValueError:
+                await context.send("AutoPilot was unable to find that song")
 
     @play.before_invoke
     async def before_play(self, context):

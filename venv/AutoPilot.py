@@ -8,6 +8,8 @@ import systemUtilitys
 import psutil
 import _thread as threads
 
+startTime = time.time()
+
 version = "0.4.8"
 trusted = ['435450974778294273']
 banned = []
@@ -169,7 +171,7 @@ class ManagmentModule(commands.Cog):
         cache = len(self.client.cached_messages)
         maxCache = 2500
         serverUptime = systemUtilitys.uptimeStamp(time.time() - psutil.boot_time())
-        clientUptime = systemUtilitys.uptimeStamp(time.process_time())
+        clientUptime = systemUtilitys.uptimeStamp(time.time() - startTime)
 
         clientName = (context.message.guild.get_member(int(self.client.user.id))).nick
         status, statusLight, error = systemUtilitys.getStatus(load, Rpercent, configSize, heartbeat, ping, cache,
@@ -243,7 +245,7 @@ async def live_stats(channelID):
             cache = len(client.cached_messages)
             maxCache = 2500
             serverUptime = systemUtilitys.uptimeStamp(time.time() - psutil.boot_time())
-            clientUptime = systemUtilitys.uptimeStamp(time.process_time())
+            clientUptime = systemUtilitys.uptimeStamp(time.time() - startTime)
 
             clientName = (channel.guild.get_member(int(client.user.id))).nick
             status, statusLight, error = systemUtilitys.getStatus(load, Rpercent, configSize, heartbeat, ping, cache,
