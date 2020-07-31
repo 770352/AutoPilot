@@ -298,6 +298,7 @@ for ext in os.listdir(CogLocations):
         print("Loading Extenstion: " + str(ext[:-3]))
         try:
             client.load_extension('Cogs.' + ext[:-3])
+            cogs[str(ext[:-3])] = {"Running": "No Problems"}
         except Exception as e:
             print("Failed to load Extension: " + str(ext[:-3] + "; Reason: " + str(e)))
 
