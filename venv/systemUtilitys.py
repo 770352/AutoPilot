@@ -1,6 +1,6 @@
 import psutil, os
 import distutils.dir_util as dirutils
-
+currentMode = None
 greenSquare = "https://media.discordapp.net/attachments/515326457652707338/723982716219162725/450.png"
 yellowSquare = "https://media.discordapp.net/attachments/515326457652707338/723986430421893160/adidas-adi" \
                "color-yellow-orange-square-shape-s-png-clip-art.png?width=668&height=587"
@@ -46,6 +46,16 @@ def getStatus(load, ram, configSize, heartbeat, ping, cache, maxCache):
     light = green
     status = ""
     problems = []
+
+    if currentMode == "Rebooting":
+        level += 2
+        problems.append("AutoPilot Is Rebooting")
+    if currentMode == "Updating":
+        level += 1
+        problems.append("AutoPilot Is Updating")
+    if currentMode == "Restarting":
+        level += 1
+        problems.append("AutoPilot Is Restarting")
 
     if load > 80:
         level += 1

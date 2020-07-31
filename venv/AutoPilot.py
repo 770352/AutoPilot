@@ -9,7 +9,7 @@ import psutil
 import _thread as threads
 
 startTime = time.time()
-
+systemUtilitys.currentMode = "Starting"
 version = "0.4.8"
 trusted = ['435450974778294273']
 banned = []
@@ -118,24 +118,30 @@ class ManagmentModule(commands.Cog):
     @commands.is_owner()
     @commands.command(name='update', brief="Updates client and then restarts the client; Host Only")
     async def update(self, context):
+        systemUtilitys.currentMode = "Updating"
         save()
         message = await context.send("Preparing To Update Client")
         res = systemUtilitys.updateClient()
         if res == 0:
             await message.edit(content="Client Already Up To Date")
+            systemUtilitys.currentMode = "Running"
         elif res == 1:
             await message.edit(content="Client Updated, Restarting")
             await client.logout()
+            await asyncio.sleep(5)
             exit(2)
         else:
             await message.edit(content="Something Went Wrong, Aborting")
+            systemUtilitys.currentMode = "Running"
 
     @commands.command(aliases=['restart'], brief='Disconnects AutoPilot; Host only')
     @commands.is_owner()
     async def closeDown(self, context):
+        systemUtilitys.currentMode = "Restarting"
         save()
         await context.send("AutoPilot Logging Off")
         await client.logout()
+        await asyncio.sleep(5)
         exit(0)
 
     @commands.command(brief="Hard stops the client; Host only")
@@ -148,9 +154,11 @@ class ManagmentModule(commands.Cog):
     @commands.command(brief="Reboots AutoPilots Host Machine; Host Only")
     @commands.is_owner()
     async def reboot(self, context):
+        systemUtilitys.currentMode = "Rebooting"
         await context.send("Rebooting")
         save()
         await client.logout()
+        await asyncio.sleep(5)
         os.system('shutdown /r /f')
         exit(0)
 
@@ -307,6 +315,7 @@ async def on_ready():
     threads.start_new(autoSave, (0, 0))
     displayed = discord.CustomActivity(name="Being Developed")
     await client.change_presence(status=discord.Status.online, activity=displayed)
+    systemUtilitys.currentMode = "Running"
     await client.loop.create_task(live_stats(726106253809418261))
 
 
