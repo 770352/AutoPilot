@@ -71,9 +71,6 @@ def getStatus(load, ram, configSize, heartbeat, ping, cache, maxCache):
         #level += 1
         #problems.append("High Config Usage")
         pass
-    if cache > maxCache/ 1.5:
-        level += 1
-        problems.append("High Cache Usage")
     if heartbeat > 1000:
         level += 1
         problems.append("High API Latency")
