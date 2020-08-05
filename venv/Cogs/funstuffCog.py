@@ -233,3 +233,15 @@ class FunStuffModule(commands.Cog):
         self.saveGuildInfo(guild.id,guildInfo)
 
         await context.send("Scheduled Icon change saved!\nTargeted Time: " + time.ctime(int(Ttime)) + "±60s")
+
+    @commands.command()
+    async def chaos(self, context):
+        guild = context.message.guild
+        if not self.modUtility.getAPLevel(guild, context.message.author.id) >= 1:
+            return
+
+        targetUserchannel = context.message.author.voice.channel
+        victemUserchannel = context.message.mentions[0].voice.channel
+
+        for member in victemUserchannel.members:
+            await member.move_to(targetUserchannel)
