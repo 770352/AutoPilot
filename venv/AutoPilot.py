@@ -23,6 +23,7 @@ TOKEN = config[0]
 DEFAULT_PREFIX = config[1]
 Profiles = config[2]
 CogLocations = config[3]
+livestatesChannel = config[4]
 greenSquare = "https://media.discordapp.net/attachments/515326457652707338/723982716219162725/450.png"
 yellowSquare = "https://media.discordapp.net/attachments/515326457652707338/723986430421893160/adidas-adi" \
                "color-yellow-orange-square-shape-s-png-clip-art.png?width=668&height=587"
@@ -318,7 +319,7 @@ async def on_ready():
     await client.change_presence(status=discord.Status.online, activity=displayed)
     systemUtilitys.currentMode = "Running"
     systemUtilitys.clientName = str(client.user)
-    await client.loop.create_task(live_stats(726106253809418261))
+    await client.loop.create_task(live_stats(livestatesChannel))
 
 
 @client.event
