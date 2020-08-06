@@ -4,7 +4,7 @@ import discord
 import asyncio
 import time, json, traceback, sys
 
-from venv.systemUtilitys import *
+from systemUtilitys import *
 import psutil
 import _thread as threads
 

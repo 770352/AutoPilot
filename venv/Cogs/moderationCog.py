@@ -2,7 +2,7 @@ import asyncio
 import AutoPilot
 from Cogs import actionLogCog, rankingsCog
 import time, shutil, requests
-from venv.systemUtilitys import *
+from systemUtilitys import *
 
 def setup(client):
     client.add_cog(ModUtilityModule(client))
