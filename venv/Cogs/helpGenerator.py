@@ -34,10 +34,15 @@ class HelpGenerator(commands.Cog):
                 command = Rcommand
                 break
         if command:
-            embed.add_field(name='Description', value=command.description, inline=False)
+            embed.add_field(name='Description', value=command.description if command.description else
+                            command.brief if command.brief else "N/A", inline=False)
             embed.add_field(name="Aliases", value=command.aliases if len(command.aliases) > 0 else "None", inline=False)
             embed.add_field(name="Host Module", value=command.cog.qualified_name)
-            embed.set_footer(text="Could Execute Here? " + ("No" if False in command.checks else "Yes"))
+            runnable = True
+            for check in command.checks:
+                if not check(context):
+                    runnable = False
+            embed.set_footer(text="Could You Execute Here? " + ("Yes" if runnable else "No"))
         else:
             embed.add_field(name='Command Not Found', value='Please make sure you spell the command correctly')
         await context.send(embed=embed)

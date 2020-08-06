@@ -242,8 +242,6 @@ class MusicPlayer(commands.Cog, name='Music'):
         if self.player[context.guild.id]['queue']:
             queue_data = self.player[context.guild.id]['queue'].pop(0)
             return await self.start_song(context=queue_data['author'], song=queue_data['title'])
-
-
         else:
             await self.voice_check(context)
 
@@ -284,7 +282,7 @@ class MusicPlayer(commands.Cog, name='Music'):
         #     context.voice_client.source.volume=self.music[str(context.guild.id)]['vol']/100
         return context.voice_client
 
-    @commands.command()
+    @commands.command(brief="Adds Song to the Queue")
     async def play(self, context, *, song):
         """
         Play a song with given url or title from Youtube
@@ -534,7 +532,7 @@ class MusicPlayer(commands.Cog, name='Music'):
 
         return await context.send("No songs in queue")
 
-    @command(name='song-info', aliases=['song?', 'nowplaying', 'current-song'])
+    @command(name='songinfo', aliases=['song?', 'nowplaying', 'current-song'])
     async def song_info(self, context):
         """
         Show information about the current playing song

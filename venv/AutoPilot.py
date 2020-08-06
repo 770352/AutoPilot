@@ -4,12 +4,12 @@ import discord
 import asyncio
 import time, json, traceback, sys
 
-import systemUtilitys
+from venv.systemUtilitys import *
 import psutil
 import _thread as threads
 
 startTime = time.time()
-systemUtilitys.currentMode = "Starting"
+currentMode = "Starting"
 version = "0.4.8"
 trusted = ['435450974778294273']
 banned = []
@@ -21,7 +21,7 @@ listoflines4 = config.readlines()
 config = [s.replace("\n", "") for s in listoflines4]
 TOKEN = config[0]
 DEFAULT_PREFIX = config[1]
-Profiles = config[2]
+ServerData = config[2]
 CogLocations = config[3]
 livestatesChannel = config[4]
 greenSquare = "https://media.discordapp.net/attachments/515326457652707338/723982716219162725/450.png"
@@ -32,12 +32,12 @@ redSquare = "https://media.discordapp.net/attachments/515326457652707338/7239827
 atcInvite = "https://discord.gg/qcFBMSS"
 stacktracebuffer = None
 
-if os.path.isfile(Profiles):
+if os.path.isfile(ServerData):
     try:
-        with open(Profiles, "r") as f:
+        with open(ServerData, "r") as f:
             ServerSettings = json.load(f)
     except:
-        print("Failed Load")
+        print("Failed To Load ServerData, ")
 
 
 def dynamicPrefix(client, message):
@@ -49,8 +49,8 @@ def dynamicPrefix(client, message):
 
 
 def save():
-    if os.path.isfile(Profiles):
-        with open(Profiles, "w") as f:
+    if os.path.isfile(ServerData):
+        with open(ServerData, "w") as f:
             ServerSettings["ProfilesInfo"]["LastSaveRaw"] = round(time.time())
             ServerSettings["ProfilesInfo"]["LastSave"] = time.ctime()
             json.dump(ServerSettings, fp=f, sort_keys=True, indent=4)
@@ -119,13 +119,13 @@ class ManagmentModule(commands.Cog):
     @commands.is_owner()
     @commands.command(name='update', brief="Updates client and then restarts the client; Host Only")
     async def update(self, context):
-        systemUtilitys.currentMode = "Updating"
+        currentMode = "Updating"
         save()
         message = await context.send("Preparing To Update Client")
-        res = systemUtilitys.updateClient()
+        res = updateClient()
         if res == 0:
             await message.edit(content="Client Already Up To Date")
-            systemUtilitys.currentMode = "Running"
+            currentMode = "Running"
         elif res == 1:
             await message.edit(content="Client Updated, Restarting")
             await asyncio.sleep(5)
@@ -133,12 +133,12 @@ class ManagmentModule(commands.Cog):
             exit(2)
         else:
             await message.edit(content="Something Went Wrong, Aborting")
-            systemUtilitys.currentMode = "Running"
+            currentMode = "Running"
 
     @commands.command(aliases=['restart'], brief='Disconnects AutoPilot; Host only')
     @commands.is_owner()
     async def closeDown(self, context):
-        systemUtilitys.currentMode = "Restarting"
+        currentMode = "Restarting"
         save()
         await asyncio.sleep(5)
         await context.send("AutoPilot Logging Off")
@@ -155,7 +155,7 @@ class ManagmentModule(commands.Cog):
     @commands.command(brief="Reboots AutoPilots Host Machine; Host Only")
     @commands.is_owner()
     async def reboot(self, context):
-        systemUtilitys.currentMode = "Rebooting"
+        currentMode = "Rebooting"
         await context.send("Rebooting")
         save()
         await asyncio.sleep(5)
@@ -174,17 +174,17 @@ class ManagmentModule(commands.Cog):
         ping, heartbeat, messageDelay = await self.Ping(context)
         # traffic = self.traffic(0)
         load = psutil.cpu_percent()
-        ram, Rpercent = systemUtilitys.memory()
-        configSize = round(systemUtilitys.configSize(Profiles) * 10) / 10
+        ram, Rpercent = memory()
+        configedSize = round(configSize(ServerData) * 10) / 10
 
         cache = len(self.client.cached_messages)
         maxCache = 2500
-        serverUptime = systemUtilitys.uptimeStamp(time.time() - psutil.boot_time())
-        clientUptime = systemUtilitys.uptimeStamp(time.time() - startTime)
+        serverUptime = uptimeStamp(time.time() - psutil.boot_time())
+        clientUptime = uptimeStamp(time.time() - startTime)
 
         clientName = (context.message.guild.get_member(int(self.client.user.id))).nick
-        status, statusLight, error = systemUtilitys.getStatus(load, Rpercent, configSize, heartbeat, ping, cache,
-                                                              maxCache)
+        status, statusLight, error = getStatus(load, Rpercent, configedSize, heartbeat, ping, cache,
+                                               maxCache)
 
         embed = discord.Embed(title=status,
                               timestamp=context.message.created_at)
@@ -194,7 +194,7 @@ class ManagmentModule(commands.Cog):
         embed.set_thumbnail(url=self.client.user.avatar_url)
         embed.add_field(name="CPU Usage", value=str(load) + "%", inline=True)
         embed.add_field(name="Memory Usage", value=str(ram))
-        embed.add_field(name="Config Size", value=str(configSize) + "KB")
+        embed.add_field(name="Config Size", value=str(configedSize) + "KB")
         embed.add_field(name="Cog Stats", value=str(len(cogs)) + "/" + str(len(cogs)))
         embed.add_field(name="Cache usage", value=str(cache) + "/" + str(maxCache) + " Messages")
         embed.add_field(name="API Latency", value=str(heartbeat) + "ms")
@@ -223,10 +223,9 @@ class ManagmentModule(commands.Cog):
         await self.createError(context)
 
     @commands.command(brief="testing error handler")
-    @commands.is_owner()
+    @userIsAuthorized(4)
     async def createError(self, context):
-        raise NotImplementedError
-        await self.errorCreator(context)
+        print("Correct Perms")
 
 
 def is_client(message):
@@ -248,17 +247,17 @@ async def live_stats(channelID):
                 heartbeat = 9999999999
             # traffic = self.traffic(0)
             load = psutil.cpu_percent()
-            ram, Rpercent = systemUtilitys.memory()
-            configSize = round(systemUtilitys.configSize(Profiles) * 10) / 10
+            ram, Rpercent = memory()
+            configedSize = round(configSize(ServerData) * 10) / 10
 
             cache = len(client.cached_messages)
             maxCache = 2500
-            serverUptime = systemUtilitys.uptimeStamp(time.time() - psutil.boot_time())
-            clientUptime = systemUtilitys.uptimeStamp(time.time() - startTime)
+            serverUptime = uptimeStamp(time.time() - psutil.boot_time())
+            clientUptime = uptimeStamp(time.time() - startTime)
 
             clientName = (channel.guild.get_member(int(client.user.id))).nick
-            status, statusLight, error = systemUtilitys.getStatus(load, Rpercent, configSize, heartbeat, ping, cache,
-                                                                  maxCache)
+            status, statusLight, error = getStatus(load, Rpercent, configedSize, heartbeat, ping, cache,
+                                                   maxCache)
             if embed:
                 embed = discord.Embed(title=status)
             else:
@@ -269,7 +268,7 @@ async def live_stats(channelID):
             # embed.set_thumbnail(url=client.user.avatar_url)
             embed.add_field(name="CPU Usage", value=str(load) + "%", inline=True)
             embed.add_field(name="Memory Usage", value=str(ram))
-            embed.add_field(name="Config Size", value=str(configSize) + "KB")
+            embed.add_field(name="Config Size", value=str(configedSize) + "KB")
             embed.add_field(name="Cog Stats", value=str(len(cogs)) + "/" + str(len(cogs)))
             embed.add_field(name="Cache usage", value=str(cache) + "/" + str(maxCache) + " Messages")
             embed.add_field(name="API Latency", value=str(heartbeat) + "ms")
@@ -282,8 +281,9 @@ async def live_stats(channelID):
                 oldMessage = await channel.send(embed=embed)
             await asyncio.sleep(5)
     except Exception as e:
-        print(str(e))
-        await client.loop.create_task(live_stats(726106253809418261))
+        print("LiveStats Error: " + str(e))
+        await asyncio.sleep(10)
+        await client.loop.create_task(live_stats(int(livestatesChannel)))
 
 
 DEFAULT_PREFIX = "-"
@@ -317,8 +317,8 @@ async def on_ready():
     threads.start_new(autoSave, (0, 0))
     displayed = discord.CustomActivity(name="Being Developed")
     await client.change_presence(status=discord.Status.online, activity=displayed)
-    systemUtilitys.currentMode = "Running"
-    systemUtilitys.clientName = str(client.user)
+    currentMode = "Running"
+    clientName = str(client.user)
     await client.loop.create_task(live_stats(livestatesChannel))
 
 
@@ -335,6 +335,10 @@ async def on_command_error(context, exception):
     guild = context.message.guild
     if isinstance(exception, commands.CommandNotFound):
         return
+
+    if isinstance(exception, commands.CheckFailure):
+        return
+
     stacktracebuffer = \
         [exception, ''.join(traceback.format_exception(type(exception), exception, exception.__traceback__))]
     errorType = str(exception)

@@ -4,8 +4,9 @@ import psutil
 import AutoPilot
 import asyncio
 
+
 class utilitys():
-    def __init__(self,client):
+    def __init__(self, client):
         self.client = client
 
     def getMessageTemplate(self, guildID, msgType):
@@ -20,7 +21,7 @@ class utilitys():
         except KeyError:
             AutoPilot.ServerSettings[str(guildID)]["ServerSettings"]['Templates'] = {str(msgType): str(template)}
 
-    async def generateWelcomeJoin(self,guild,member):
+    async def generateWelcomeJoin(self, guild, member):
         template = self.getMessageTemplate(guild.id, 'welcomeJoin')
         if template:
             formated = str(template).format(server=guild.name, memberMention=member.mention,
@@ -29,7 +30,7 @@ class utilitys():
         else:
             return None
 
-    async def generateWelcomeLeave(self,guild,member):
+    async def generateWelcomeLeave(self, guild, member):
         template = self.getMessageTemplate(guild.id, 'welcomeLeave')
         if template:
             formated = str(template).format(server=guild.name, memberMention=member.mention,
