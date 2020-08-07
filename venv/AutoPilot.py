@@ -10,7 +10,7 @@ import _thread as threads
 
 startTime = time.time()
 currentMode = "Starting"
-version = "0.4.8"
+version = "0.4.9"
 
 banned = []
 cogs = {}
@@ -24,6 +24,7 @@ DEFAULT_PREFIX = config[1]
 ServerData = config[2]
 CogLocations = config[3]
 livestatesChannel = config[4]
+totalModules = 0
 greenSquare = "https://media.discordapp.net/attachments/515326457652707338/723982716219162725/450.png"
 yellowSquare = "https://media.discordapp.net/attachments/515326457652707338/723986430421893160/adidas-adi" \
                "color-yellow-orange-square-shape-s-png-clip-art.png?width=668&height=587"
@@ -270,7 +271,7 @@ async def live_stats(channelID):
             embed.add_field(name="CPU Usage", value=str(load) + "%", inline=True)
             embed.add_field(name="Memory Usage", value=str(ram))
             embed.add_field(name="Config Size", value=str(configedSize) + "KB")
-            embed.add_field(name="Cog Stats", value=str(len(cogs)) + "/" + str(len(cogs)))
+            embed.add_field(name="Cog Stats", value=str(len(cogs)) + "/" + str(totalModules))
             embed.add_field(name="Cache usage", value=str(cache) + "/" + str(maxCache) + " Messages")
             embed.add_field(name="API Latency", value=str(heartbeat) + "ms")
             embed.add_field(name="Server Uptime", value=str(serverUptime), inline=False)
@@ -293,12 +294,14 @@ client = commands.Bot(dynamicPrefix, case_insensitive=True, activity=displayed, 
 client.add_cog(ManagmentModule(client))
 cogs["ManagementModule"] = {"Running": "No Problems"}
 cogs["SystemUtilitys"] = {"Running": "No Problems"}
+totalModules += 2
 time.sleep(1)
 client.remove_command('help')
 for ext in os.listdir(CogLocations):
     if not ext.startswith(('_', '.', '-')):
         print("Loading Extenstion: " + str(ext[:-3]))
         try:
+            totalModules += 1
             client.load_extension('Cogs.' + ext[:-3])
             cogs[str(ext[:-3])] = {"Running": "No Problems"}
         except Exception as e:

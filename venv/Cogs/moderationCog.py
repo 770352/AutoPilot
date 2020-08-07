@@ -397,6 +397,29 @@ class ModerationModule(commands.Cog):
                                   , timestamp=context.message.created_at)
             await self.log.sendLog(guild.id, embed)
 
+
+    @commands.command(brief="Returns an embed with serverinfo")
+    async def serverinfo(self, context):
+        guild = await self.client.fetch_guild(context.message.guild.id)
+        createdOn = guild.created_at
+        maxMembers = guild.max_members
+        guildDescpt = guild.description
+        boosts = guild.premium_subscription_count
+        channels = guild.channels
+        owner = guild.owner
+        icon = guild.icon_url
+        members = guild.member_count
+
+        embed = discord.Embed(title="Server Info For: " + str(guild),
+                              description="", timestamp=context.message.created_at)
+        embed.add_field(name="Created On", value=str(createdOn).split(".", 1)[0])
+        embed.add_field(name="Server Owner", value=str(owner))
+        embed.add_field(name="Server Boosts", value=str(boosts))
+        embed.add_field(name="Member Counts", value=str(members))
+        embed.set_footer(text="Max members: " + str(maxMembers))
+
+        await context.send(embed=embed)
+
     @commands.command(help="Returns an embed with userinfo")
     async def userinfo(self, context):
         if not context.message.mentions:
