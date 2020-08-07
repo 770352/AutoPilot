@@ -461,5 +461,5 @@ class ModerationModule(commands.Cog):
         embed.add_field(name="Roles", value=roleString, inline=False)
         embed.set_thumbnail(url=user.avatar_url)
         embed.set_footer(text="UserID: " + str(user.id) + " • APPL: " + str(
-            self.utility.getAPLevel(guild, user.id)) + " • Is Bot? " + str(user.bot))
+            getAPLevel(guild, user.id)) + " • Is Bot? " + str(user.bot))
         await context.send(embed=embed)
