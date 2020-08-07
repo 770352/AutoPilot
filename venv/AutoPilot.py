@@ -116,8 +116,9 @@ class ManagmentModule(commands.Cog):
         save()
         await context.send("Saved")
 
-    @commands.is_owner()
+
     @commands.command(name='update', brief="Updates client and then restarts the client; Host Only")
+    @commands.is_owner()
     async def update(self, context):
         currentMode = "Updating"
         save()
