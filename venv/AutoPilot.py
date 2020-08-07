@@ -11,7 +11,7 @@ import _thread as threads
 startTime = time.time()
 currentMode = "Starting"
 version = "0.4.8"
-trusted = ['435450974778294273']
+
 banned = []
 cogs = {}
 ServerSettings = {}

@@ -3,6 +3,7 @@ import discord
 import AutoPilot
 from Cogs import rankingsCog
 from Cogs import moderationCog
+from systemUtilitys import *
 import time
 
 
@@ -58,11 +59,10 @@ class FunStuffModule(commands.Cog):
         await message.add_reaction('❌')
 
     @commands.command(brief="Configure Suggestion Channel, Server Mod's only")
+    @userIsAuthorized(1)
     async def setSuggestion(self,context):
         guild = context.message.guild
         member = context.message.author
-        if not self.modUtility.getAPLevel(guild,context.message.author.id) > 1:
-            return
         guildInfo = self.loadguildinfo(guild.id)
 
         if context.message.channel_mentions:
@@ -108,10 +108,9 @@ class FunStuffModule(commands.Cog):
         pass
 
     @commands.command(brief="Configure ModMail Channel, Server Mod's only")
+    @userIsAuthorized(1)
     async def configModmail(self, context):
         guild = context.message.guild
-        if not self.modUtility.getAPLevel(guild, context.message.author.id) > 2:
-            return
         extraConfigs = self.loadguildinfo(guild.id)
 
         if context.message.channel_mentions:
@@ -204,10 +203,9 @@ class FunStuffModule(commands.Cog):
     @commands.command(name="scheduleIconChange", aliases=['planProfileChange'], description=
     "Schedules an icon change up to 6 months out\nIcon= Attach the png you want to be the servers pfp\n"
     "Time= Use the format MM/DD/YY or a Unix Timestamp\nNote: Only one event can be scheduled at a time")
+    @userIsAuthorized(1)
     async def scheduleIconChange(self, context):
         guild = context.message.guild
-        if not self.modUtility.getAPLevel(guild, context.message.author.id) >= 1:
-            return
         if context.message.attachments:
             try:
                 timeStr = str(context.message.content).split(" ", 1)[1]
@@ -235,11 +233,8 @@ class FunStuffModule(commands.Cog):
         await context.send("Scheduled Icon change saved!\nTargeted Time: " + time.ctime(int(Ttime)) + "±60s")
 
     @commands.command()
+    @userIsAuthorized(1)
     async def chaos(self, context):
-        guild = context.message.guild
-        if not self.modUtility.getAPLevel(guild, context.message.author.id) >= 1:
-            return
-
         targetUserchannel = context.message.author.voice.channel
         victemUserchannel = context.message.mentions[0].voice.channel
 

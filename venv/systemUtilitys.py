@@ -4,7 +4,7 @@ import discord
 import distutils.dir_util as dirutils
 currentMode = None
 clientName = None
-trusted = []
+trusted = ['435450974778294273']
 ServerSettings = {}
 greenSquare = "https://media.discordapp.net/attachments/515326457652707338/723982716219162725/450.png"
 yellowSquare = "https://media.discordapp.net/attachments/515326457652707338/723986430421893160/adidas-adi" \
